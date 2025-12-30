@@ -1,5 +1,11 @@
 # GameCP Developer Kit
 
+[![GitHub](https://img.shields.io/badge/github-GameCP%2Fpackages-blue?logo=github)](https://github.com/GameCP/packages)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm](https://img.shields.io/badge/npm-%40gamecp-red?logo=npm)](https://www.npmjs.com/org/gamecp)
+
+> Official TypeScript developer kit for building GameCP extensions
+
 Monorepo for GameCP extension development tools and type definitions.
 
 ## Packages

@@ -20,6 +20,15 @@
     "extensions"
   ],
   "author": "GameCP",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GameCP/packages.git",
+    "directory": "types"
+  },
+  "bugs": {
+    "url": "https://github.com/GameCP/packages/issues"
+  },
+  "homepage": "https://github.com/GameCP/packages/tree/main/types#readme",
   "license": "MIT",
   "devDependencies": {
     "typescript": "^5.3.3"

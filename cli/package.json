@@ -24,6 +24,15 @@
     "development"
   ],
   "author": "GameCP",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GameCP/packages.git",
+    "directory": "cli"
+  },
+  "bugs": {
+    "url": "https://github.com/GameCP/packages/issues"
+  },
+  "homepage": "https://github.com/GameCP/packages/tree/main/cli#readme",
   "license": "MIT",
   "dependencies": {
     "@gamecp/types": "file:../types",
