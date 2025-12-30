@@ -7,7 +7,8 @@
 set -e
 
 VERSION_TYPE=${1:-patch}
-PACKAGES=("${@:2}")
+shift
+PACKAGES=("$@")
 
 # If no packages specified, use all
 if [ ${#PACKAGES[@]} -eq 0 ]; then
@@ -15,6 +16,7 @@ if [ ${#PACKAGES[@]} -eq 0 ]; then
 fi
 
 # Colors
+RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
@@ -31,7 +33,9 @@ if [[ ! "$VERSION_TYPE" =~ ^(patch|minor|major)$ ]]; then
     exit 1
 fi
 
-declare -A VERSIONS
+# Temporary file to store versions
+VERSIONS_FILE=$(mktemp)
+trap "rm -f $VERSIONS_FILE" EXIT
 
 for package in "${PACKAGES[@]}"; do
     if [ ! -d "$package" ]; then
@@ -42,7 +46,7 @@ for package in "${PACKAGES[@]}"; do
     echo -e "${YELLOW}Updating $package...${NC}"
     cd "$package"
     NEW_VERSION=$(npm version $VERSION_TYPE --no-git-tag-version)
-    VERSIONS[$package]=$NEW_VERSION
+    echo "$package:$NEW_VERSION" >> "$VERSIONS_FILE"
     echo -e "${GREEN}✓ $package → $NEW_VERSION${NC}"
     cd ..
 done
@@ -58,9 +62,9 @@ done
 
 echo -e "\n${GREEN}✓ Version update complete!${NC}\n"
 echo -e "${BLUE}Updated packages:${NC}"
-for package in "${PACKAGES[@]}"; do
-    echo -e "  ${GREEN}✓${NC} @gamecp/$package@${VERSIONS[$package]}"
-done
+while IFS=: read -r package version; do
+    echo -e "  ${GREEN}✓${NC} @gamecp/$package@$version"
+done < "$VERSIONS_FILE"
 
 echo -e "\n${YELLOW}Next steps:${NC}"
 echo -e "  1. Review changes: ${BLUE}git diff${NC}"

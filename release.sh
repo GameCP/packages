@@ -10,7 +10,8 @@
 set -e
 
 VERSION_TYPE=${1:-patch}
-PACKAGES=("${@:2}")
+shift
+PACKAGES=("$@")
 
 # If no packages specified, use all
 if [ ${#PACKAGES[@]} -eq 0 ]; then
@@ -35,6 +36,10 @@ if [[ ! "$VERSION_TYPE" =~ ^(patch|minor|major)$ ]]; then
     exit 1
 fi
 
+# Temporary file to store versions
+VERSIONS_FILE=$(mktemp)
+trap "rm -f $VERSIONS_FILE" EXIT
+
 # Function to bump version
 bump_version() {
     local package=$1
@@ -46,9 +51,10 @@ bump_version() {
     NEW_VERSION=$(npm version $VERSION_TYPE --no-git-tag-version)
     echo -e "${GREEN}✓ $package bumped to $NEW_VERSION${NC}"
     
-    cd ..
+    # Store version in temp file
+    echo "$package:$NEW_VERSION" >> "$VERSIONS_FILE"
     
-    echo "$NEW_VERSION"
+    cd ..
 }
 
 # Function to build package
@@ -74,8 +80,11 @@ publish_package() {
     cd ..
 }
 
-# Store versions for git tagging
-declare -A VERSIONS
+# Function to get version for package
+get_version() {
+    local package=$1
+    grep "^$package:" "$VERSIONS_FILE" | cut -d: -f2
+}
 
 # Step 1: Bump versions
 echo -e "\n${BLUE}Step 1: Bumping versions${NC}\n"
@@ -85,8 +94,7 @@ for package in "${PACKAGES[@]}"; do
         exit 1
     fi
     
-    VERSION=$(bump_version "$package")
-    VERSIONS[$package]=$VERSION
+    bump_version "$package"
 done
 
 # Step 2: Build packages
@@ -107,20 +115,25 @@ echo -e "\n${BLUE}Step 4: Publishing to npm${NC}\n"
 # Define dependency order
 PUBLISH_ORDER=()
 for pkg in "types" "manifest" "cli"; do
-    if [[ " ${PACKAGES[@]} " =~ " ${pkg} " ]]; then
-        PUBLISH_ORDER+=("$pkg")
-    fi
+    for selected in "${PACKAGES[@]}"; do
+        if [ "$pkg" = "$selected" ]; then
+            PUBLISH_ORDER+=("$pkg")
+            break
+        fi
+    done
 done
 
 for package in "${PUBLISH_ORDER[@]}"; do
-    publish_package "$package" "${VERSIONS[$package]}"
+    VERSION=$(get_version "$package")
+    publish_package "$package" "$VERSION"
 done
 
 # Step 5: Create git tags
 echo -e "\n${BLUE}Step 5: Creating git tags${NC}\n"
 for package in "${PACKAGES[@]}"; do
-    TAG="${package}-${VERSIONS[$package]}"
-    git tag -a "$TAG" -m "@gamecp/$package ${VERSIONS[$package]}"
+    VERSION=$(get_version "$package")
+    TAG="${package}-${VERSION}"
+    git tag -a "$TAG" -m "@gamecp/$package ${VERSION}"
     echo -e "${GREEN}✓ Created tag: $TAG${NC}"
 done
 
@@ -134,6 +147,7 @@ echo -e "${GREEN}✓ Pushed to GitHub${NC}"
 echo -e "\n${GREEN}🎉 Release complete!${NC}\n"
 echo -e "${BLUE}Published packages:${NC}"
 for package in "${PACKAGES[@]}"; do
-    echo -e "  ${GREEN}✓${NC} @gamecp/$package@${VERSIONS[$package]}"
+    VERSION=$(get_version "$package")
+    echo -e "  ${GREEN}✓${NC} @gamecp/$package@${VERSION}"
 done
 echo ""
