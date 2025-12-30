@@ -92,7 +92,42 @@ npm link @gamecp/manifest
 
 ## Release Automation
 
-### Quick Release (Recommended)
+### Using npm Scripts (Easiest)
+
+```bash
+# Release all packages with patch bump
+npm run release:patch
+
+# Release all packages with minor bump
+npm run release:minor
+
+# Release all packages with major bump
+npm run release:major
+
+# Release individual packages
+npm run release:types
+npm run release:manifest
+npm run release:cli
+
+# Update versions without publishing
+npm run update:patch
+npm run update:minor
+npm run update:major
+
+# Build packages
+npm run build:all
+npm run build:types
+npm run build:manifest
+npm run build:cli
+
+# Publish manually
+npm run publish:all
+npm run publish:types
+npm run publish:manifest
+npm run publish:cli
+```
+
+### Using Scripts Directly
 
 Use the automated release script to version, build, and publish packages:
 

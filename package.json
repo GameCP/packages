@@ -1,0 +1,37 @@
+{
+  "name": "gamecp-packages",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GameCP developer kit monorepo",
+  "scripts": {
+    "release:patch": "./release.sh patch",
+    "release:minor": "./release.sh minor",
+    "release:major": "./release.sh major",
+    "release:types": "./release.sh patch types",
+    "release:manifest": "./release.sh patch manifest",
+    "release:cli": "./release.sh patch cli",
+    "update:patch": "./update-versions.sh patch",
+    "update:minor": "./update-versions.sh minor",
+    "update:major": "./update-versions.sh major",
+    "build:all": "cd types && npm run build && cd ../manifest && npm run build && cd ../cli && npm run build",
+    "build:types": "cd types && npm run build",
+    "build:manifest": "cd manifest && npm run build",
+    "build:cli": "cd cli && npm run build",
+    "publish:types": "cd types && npm publish",
+    "publish:manifest": "cd manifest && npm publish",
+    "publish:cli": "cd cli && npm publish",
+    "publish:all": "npm run publish:types && npm run publish:manifest && npm run publish:cli"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GameCP/packages.git"
+  },
+  "keywords": [
+    "gamecp",
+    "typescript",
+    "extensions",
+    "developer-kit"
+  ],
+  "author": "GameCP",
+  "license": "MIT"
+}
