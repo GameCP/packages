@@ -90,6 +90,49 @@ npm link @gamecp/cli
 npm link @gamecp/manifest
 ```
 
+## Release Automation
+
+### Quick Release (Recommended)
+
+Use the automated release script to version, build, and publish packages:
+
+```bash
+# Release all packages with patch version bump
+./release.sh patch
+
+# Release all packages with minor version bump
+./release.sh minor
+
+# Release all packages with major version bump
+./release.sh major
+
+# Release specific packages only
+./release.sh patch types cli
+./release.sh minor manifest
+```
+
+The script will:
+1. ✅ Bump versions
+2. ✅ Build packages
+3. ✅ Commit changes
+4. ✅ Publish to npm (in dependency order)
+5. ✅ Create git tags
+6. ✅ Push to GitHub
+
+### Update Versions Only
+
+To bump versions without publishing:
+
+```bash
+# Update all packages
+./update-versions.sh patch
+
+# Update specific packages
+./update-versions.sh minor types cli
+```
+
+This is useful for testing before publishing.
+
 ## Publishing
 
 Each package is published independently to npm under the `@gamecp` scope:
