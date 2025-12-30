@@ -1,106 +1,87 @@
 /**
  * GameCP Extension Events
- * Event types and handlers for extension lifecycle
+ * Real event types based on the actual extension system
  */
 
-import { ExtensionContext, ServerInfo, ServerStatus } from './context';
+import type { ExtensionContext, EventHandler, ApiRouteHandler } from './context';
 
-export interface ExtensionEvents {
-  /** Called when extension is loaded */
-  onLoad?(context: ExtensionContext): void | Promise<void>;
-  
-  /** Called when extension is unloaded */
-  onUnload?(context: ExtensionContext): void | Promise<void>;
-  
-  /** Called on cron tick */
-  onCron?(event: CronEvent, context: ExtensionContext): void | Promise<void>;
-  
-  /** Called when server starts */
-  onServerStart?(event: ServerEvent, context: ExtensionContext): void | Promise<void>;
-  
-  /** Called when server stops */
-  onServerStop?(event: ServerEvent, context: ExtensionContext): void | Promise<void>;
-  
-  /** Called when server crashes */
-  onServerCrash?(event: ServerCrashEvent, context: ExtensionContext): void | Promise<void>;
-  
-  /** Called when server status changes */
-  onServerStatusChange?(event: ServerStatusChangeEvent, context: ExtensionContext): void | Promise<void>;
-  
-  /** Called when player joins */
-  onPlayerJoin?(event: PlayerEvent, context: ExtensionContext): void | Promise<void>;
-  
-  /** Called when player leaves */
-  onPlayerLeave?(event: PlayerEvent, context: ExtensionContext): void | Promise<void>;
-  
-  /** Called when console output is received */
-  onConsoleOutput?(event: ConsoleOutputEvent, context: ExtensionContext): void | Promise<void>;
-}
-
-export interface CronEvent {
-  /** Cron expression that triggered */
-  expression: string;
-  
-  /** Timestamp of execution */
-  timestamp: Date;
-  
-  /** Scheduled execution time */
-  scheduledTime: Date;
-}
-
-export interface ServerEvent {
-  /** Server information */
-  server: ServerInfo;
-  
-  /** Event timestamp */
-  timestamp: Date;
-}
-
-export interface ServerCrashEvent extends ServerEvent {
-  /** Crash reason/error */
-  reason?: string;
-  
-  /** Exit code */
-  exitCode?: number;
-  
-  /** Last console lines before crash */
-  lastOutput?: string[];
-}
-
-export interface ServerStatusChangeEvent extends ServerEvent {
-  /** Previous status */
-  previousStatus: ServerStatus['status'];
-  
-  /** New status */
-  newStatus: ServerStatus['status'];
-}
-
-export interface PlayerEvent extends ServerEvent {
-  /** Player information */
-  player: {
-    name: string;
-    uuid?: string;
-    ip?: string;
-  };
-}
-
-export interface ConsoleOutputEvent extends ServerEvent {
-  /** Console output line */
-  line: string;
-  
-  /** Output type */
-  type: 'stdout' | 'stderr';
+/**
+ * Extension exports
+ * What your extension should export
+ */
+export interface ExtensionExports {
+  /** API route handlers */
+  [key: string]: ApiRouteHandler | EventHandler | any;
 }
 
 /**
- * Extension entry point
- * Extensions should export a default object implementing this interface
+ * Server event payloads
  */
-export interface Extension extends ExtensionEvents {
-  /** Extension metadata (optional, can be in manifest only) */
-  metadata?: {
-    name: string;
-    version: string;
-    description?: string;
-  };
+export interface ServerCrashPayload {
+  serverId: string;
+  serverName: string;
+  crashReason?: string;
+  exitCode?: number;
+  timestamp?: Date;
 }
+
+export interface ServerStartPayload {
+  serverId: string;
+  serverName: string;
+  timestamp?: Date;
+}
+
+export interface ServerStopPayload {
+  serverId: string;
+  serverName: string;
+  timestamp?: Date;
+}
+
+export interface PlayerJoinPayload {
+  serverId: string;
+  serverName: string;
+  playerName: string;
+  playerUuid?: string;
+  playerIp?: string;
+  timestamp?: Date;
+}
+
+export interface PlayerLeavePayload {
+  serverId: string;
+  serverName: string;
+  playerName: string;
+  playerUuid?: string;
+  timestamp?: Date;
+}
+
+/**
+ * Common event types
+ */
+export type ServerEvent =
+  | 'server.status.crash'
+  | 'server.status.started'
+  | 'server.status.stopped'
+  | 'server.player.join'
+  | 'server.player.leave'
+  | 'server.console.output';
+
+/**
+ * Event payload types mapped to event names
+ */
+export interface EventPayloadMap {
+  'server.status.crash': ServerCrashPayload;
+  'server.status.started': ServerStartPayload;
+  'server.status.stopped': ServerStopPayload;
+  'server.player.join': PlayerJoinPayload;
+  'server.player.leave': PlayerLeavePayload;
+  'server.console.output': { line: string; serverId: string };
+}
+
+/**
+ * Typed event handler
+ */
+export type TypedEventHandler<T extends ServerEvent> = (
+  event: T,
+  payload: EventPayloadMap[T],
+  ctx: ExtensionContext
+) => Promise<void> | void;

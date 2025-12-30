@@ -8,7 +8,7 @@ export * from './manifest';
 export * from './context';
 export * from './events';
 
-// Convenience type for extension entry point
-export type { Extension } from './events';
+// Convenience exports
 export type { ExtensionManifest } from './manifest';
-export type { ExtensionContext } from './context';
+export type { ExtensionContext, ApiRouteHandler, EventHandler } from './context';
+export type { ExtensionExports, ServerEvent, TypedEventHandler } from './events';

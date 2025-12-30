@@ -1,169 +1,141 @@
 /**
- * GameCP Extension Context
- * Available to extensions at runtime
+ * GameCP Extension Runtime Context
+ * This is the actual API available to extensions at runtime
  */
 
 export interface ExtensionContext {
-  /** Extension metadata */
-  extension: {
-    id: string;
-    name: string;
-    version: string;
+  /** HTTP request object */
+  request: {
+    body: Record<string, any>;
+    query: Record<string, any>;
+    headers: Record<string, string>;
+    method: string;
+    path: string;
   };
   
-  /** Tenant information */
-  tenant: TenantContext;
+  /** Database access */
+  db: DatabaseClient;
   
-  /** Extension settings */
-  settings: Record<string, any>;
+  /** HTTP client for making external requests */
+  http: HttpClient;
+  
+  /** Extension configuration from gamecp.json */
+  config: Record<string, any>;
   
   /** Logger instance */
   logger: Logger;
-  
-  /** Storage API */
-  storage: Storage;
-  
-  /** Server control API (if permission granted) */
-  server?: ServerAPI;
 }
 
-export interface TenantContext {
-  /** Tenant ID */
-  id: string;
+export interface DatabaseClient {
+  /** Get a collection */
+  collection(name: string): Collection;
+}
+
+export interface Collection {
+  /** Insert a single document */
+  insertOne(doc: any): Promise<{ insertedId: any }>;
   
-  /** Tenant name */
-  name: string;
+  /** Insert multiple documents */
+  insertMany(docs: any[]): Promise<{ insertedIds: any[] }>;
   
-  /** Tenant settings */
-  settings?: Record<string, any>;
+  /** Find documents */
+  find(query: any): FindCursor;
+  
+  /** Find one document */
+  findOne(query: any): Promise<any | null>;
+  
+  /** Update one document */
+  updateOne(query: any, update: any): Promise<{ modifiedCount: number }>;
+  
+  /** Update multiple documents */
+  updateMany(query: any, update: any): Promise<{ modifiedCount: number }>;
+  
+  /** Delete one document */
+  deleteOne(query: any): Promise<{ deletedCount: number }>;
+  
+  /** Delete multiple documents */
+  deleteMany(query: any): Promise<{ deletedCount: number }>;
+  
+  /** Count documents */
+  countDocuments(query?: any): Promise<number>;
+}
+
+export interface FindCursor {
+  /** Convert cursor to array */
+  toArray(): Promise<any[]>;
+  
+  /** Limit results */
+  limit(count: number): FindCursor;
+  
+  /** Skip results */
+  skip(count: number): FindCursor;
+  
+  /** Sort results */
+  sort(sort: any): FindCursor;
+}
+
+export interface HttpClient {
+  /** Make GET request */
+  get(url: string, config?: HttpConfig): Promise<HttpResponse>;
+  
+  /** Make POST request */
+  post(url: string, data?: any, config?: HttpConfig): Promise<HttpResponse>;
+  
+  /** Make PUT request */
+  put(url: string, data?: any, config?: HttpConfig): Promise<HttpResponse>;
+  
+  /** Make DELETE request */
+  delete(url: string, config?: HttpConfig): Promise<HttpResponse>;
+  
+  /** Make PATCH request */
+  patch(url: string, data?: any, config?: HttpConfig): Promise<HttpResponse>;
+}
+
+export interface HttpConfig {
+  headers?: Record<string, string>;
+  timeout?: number;
+  params?: Record<string, any>;
+}
+
+export interface HttpResponse {
+  status: number;
+  statusText: string;
+  data: any;
+  headers: Record<string, string>;
 }
 
 export interface Logger {
-  /** Log informational message */
-  info(message: string, meta?: Record<string, any>): void;
+  /** Log info message */
+  info(message: string, meta?: any): void;
   
   /** Log warning message */
-  warn(message: string, meta?: Record<string, any>): void;
+  warn(message: string, meta?: any): void;
   
   /** Log error message */
-  error(message: string, meta?: Record<string, any>): void;
+  error(message: string, meta?: any): void;
   
   /** Log debug message */
-  debug(message: string, meta?: Record<string, any>): void;
+  debug(message: string, meta?: any): void;
 }
 
-export interface Storage {
-  /** Get a value from storage */
-  get<T = any>(key: string): Promise<T | null>;
-  
-  /** Set a value in storage */
-  set<T = any>(key: string, value: T): Promise<void>;
-  
-  /** Delete a value from storage */
-  delete(key: string): Promise<void>;
-  
-  /** Check if a key exists */
-  has(key: string): Promise<boolean>;
-  
-  /** List all keys */
-  keys(): Promise<string[]>;
-  
-  /** Clear all storage */
-  clear(): Promise<void>;
+/**
+ * API Route Handler
+ * Handlers for custom API routes defined in gamecp.json
+ */
+export type ApiRouteHandler = (ctx: ExtensionContext) => Promise<ApiResponse> | ApiResponse;
+
+export interface ApiResponse {
+  status: number;
+  body: any;
+  headers?: Record<string, string>;
 }
 
-export interface ServerAPI {
-  /** Get server information */
-  getInfo(): Promise<ServerInfo>;
-  
-  /** Get server status */
-  getStatus(): Promise<ServerStatus>;
-  
-  /** Restart the server */
-  restart(): Promise<void>;
-  
-  /** Start the server */
-  start(): Promise<void>;
-  
-  /** Stop the server */
-  stop(): Promise<void>;
-  
-  /** Send a command to the server console */
-  sendCommand(command: string): Promise<void>;
-  
-  /** Read a file from the server */
-  readFile(path: string): Promise<string>;
-  
-  /** Write a file to the server */
-  writeFile(path: string, content: string): Promise<void>;
-  
-  /** Delete a file from the server */
-  deleteFile(path: string): Promise<void>;
-  
-  /** List files in a directory */
-  listFiles(path: string): Promise<FileInfo[]>;
-  
-  /** Get server console output */
-  getConsoleOutput(lines?: number): Promise<string[]>;
-}
-
-export interface ServerInfo {
-  /** Server ID */
-  id: string;
-  
-  /** Server name */
-  name: string;
-  
-  /** Game type */
-  game: string;
-  
-  /** Server IP address */
-  ip: string;
-  
-  /** Server port */
-  port: number;
-  
-  /** Server version */
-  version?: string;
-  
-  /** Server metadata */
-  metadata?: Record<string, any>;
-}
-
-export interface ServerStatus {
-  /** Current status */
-  status: 'online' | 'offline' | 'starting' | 'stopping' | 'crashed';
-  
-  /** Player count */
-  players?: {
-    online: number;
-    max: number;
-  };
-  
-  /** Resource usage */
-  resources?: {
-    cpu?: number;
-    memory?: number;
-    disk?: number;
-  };
-  
-  /** Uptime in seconds */
-  uptime?: number;
-}
-
-export interface FileInfo {
-  /** File name */
-  name: string;
-  
-  /** File path */
-  path: string;
-  
-  /** Is directory? */
-  isDirectory: boolean;
-  
-  /** File size in bytes */
-  size?: number;
-  
-  /** Last modified timestamp */
-  modified?: Date;
-}
+/**
+ * Event Handler
+ * Handlers for server events defined in gamecp.json
+ */
+export type EventHandler = (
+  event: string,
+  payload: any,
+  ctx: ExtensionContext
+) => Promise<void> | void;
