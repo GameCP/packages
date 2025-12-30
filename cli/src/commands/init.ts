@@ -128,8 +128,8 @@ export async function initCommand(name?: string, options: InitOptions = { dir: '
         validate: 'gamecp validate'
       },
       devDependencies: {
-        '@gamecp/types': '^0.1.0',
-        '@gamecp/cli': '^0.1.0',
+        '@gamecp/types': '^1.0.0',
+        '@gamecp/cli': '^1.0.0',
         'typescript': '^5.3.3'
       }
     };

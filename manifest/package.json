@@ -1,6 +1,6 @@
 {
   "name": "@gamecp/manifest",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Manifest validation and utilities for GameCP extensions",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,7 +30,7 @@
   "homepage": "https://github.com/GameCP/packages/tree/main/manifest#readme",
   "license": "MIT",
   "dependencies": {
-    "@gamecp/types": "file:../types"
+    "@gamecp/types": "^1.0.0"
   },
   "devDependencies": {
     "typescript": "^5.3.3"

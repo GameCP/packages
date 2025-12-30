@@ -1,6 +1,6 @@
 {
   "name": "@gamecp/cli",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "CLI tool for developing GameCP extensions",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -35,8 +35,8 @@
   "homepage": "https://github.com/GameCP/packages/tree/main/cli#readme",
   "license": "MIT",
   "dependencies": {
-    "@gamecp/types": "file:../types",
-    "@gamecp/manifest": "file:../manifest",
+    "@gamecp/types": "^1.0.0",
+    "@gamecp/manifest": "^1.0.0",
     "commander": "^11.1.0",
     "chalk": "^4.1.2",
     "inquirer": "^8.2.5",
