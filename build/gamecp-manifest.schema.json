@@ -60,6 +60,10 @@
             "type": "number", 
             "minimum": 1, 
             "maximum": 3 
+          },
+          "position": {
+            "enum": ["top", "bottom"],
+            "description": "For MOUNT method: where to render the component"
           }
         },
         "required": ["method", "target", "component"]
