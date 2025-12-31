@@ -27,6 +27,8 @@ export interface ExtensionContext {
   
   /** Instance control methods (when available) */
   instance?: {
+    start: () => Promise<void>;
+    stop: () => Promise<void>;
     restart: () => Promise<void>;
     sendCommand: (command: string) => Promise<void>;
     deleteFile: (path: string) => Promise<void>;
