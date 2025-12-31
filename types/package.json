@@ -21,6 +21,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
+    "docs:generate": "typedoc --out docs src/index.ts src/client.ts --json docs/api.json",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -41,6 +42,7 @@
   "homepage": "https://github.com/GameCP/packages/tree/main/types#readme",
   "license": "MIT",
   "devDependencies": {
+    "typedoc": "^0.28.15",
     "typescript": "^5.3.3"
   },
   "publishConfig": {
