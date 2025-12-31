@@ -165,6 +165,11 @@
         "tags": {
           "type": "array",
           "items": { "type": "string" }
+        },
+        "visibility": {
+          "enum": ["public", "unlisted"],
+          "default": "public",
+          "description": "public: visible in marketplace, unlisted: hidden but installable via link"
         }
       },
       "required": ["icon", "category"]
