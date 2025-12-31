@@ -115,6 +115,9 @@ export function useGameCP() {
     t: gamecp.t.bind(gamecp),
     api: gamecp.api,
     confirm: gamecp.confirm.bind(gamecp),
+    
+    // Config helper
+    getConfig: (extensionId: string) => getWindow().GameCP_ExtensionConfig?.[extensionId] || {},
   };
 }
 
