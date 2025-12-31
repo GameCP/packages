@@ -63,7 +63,8 @@ export type ServerEvent =
   | 'server.status.stopped'
   | 'server.player.join'
   | 'server.player.leave'
-  | 'server.console.output';
+  | 'server.console.output'
+  | 'cron.tick';
 
 /**
  * Event payload types mapped to event names
@@ -75,6 +76,7 @@ export interface EventPayloadMap {
   'server.player.join': PlayerJoinPayload;
   'server.player.leave': PlayerLeavePayload;
   'server.console.output': { line: string; serverId: string };
+  'cron.tick': { task: any };
 }
 
 /**

@@ -24,6 +24,13 @@ export interface ExtensionContext {
   
   /** Logger instance */
   logger: Logger;
+  
+  /** Instance control methods (when available) */
+  instance?: {
+    restart: () => Promise<void>;
+    sendCommand: (command: string) => Promise<void>;
+    deleteFile: (path: string) => Promise<void>;
+  };
 }
 
 export interface DatabaseClient {
