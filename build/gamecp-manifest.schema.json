@@ -2,27 +2,179 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "extension_id": { "type": "string" },
-    "version": { "type": "string" },
-    "name": { "type": "string" },
-    "description": { "type": "string" },
-    "author": { "type": "string" },
-    "entry_point": { "type": "string" },
+    "extension_id": { 
+      "type": "string",
+      "pattern": "^[a-z0-9-]{3,50}$"
+    },
+    "version": { 
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "name": { 
+      "type": "string",
+      "maxLength": 100
+    },
+    "description": { 
+      "type": "string",
+      "maxLength": 500
+    },
+    "author": { 
+      "type": "string",
+      "maxLength": 100
+    },
+    "ui_bundle": { "type": "string" },
+    "handlers_bundle": { "type": "string" },
     "integrity": { "type": "string" },
     "ui_injection": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "method": { "enum": ["MOUNT", "HANDLER", "AUGMENT"] },
-          "target": { "type": "string" },
+          "method": { 
+            "enum": ["MOUNT", "HANDLER", "AUGMENT"] 
+          },
+          "target": { 
+            "enum": [
+              "server.dashboard.widget",
+              "server.dashboard.page",
+              "server.dashboard.recent_activity",
+              "server.console.page",
+              "server.files.page",
+              "server.backup.page",
+              "server.metrics.page",
+              "server.mods.page",
+              "server.versions.page",
+              "server.configurations.page",
+              "server.environment.page",
+              "server.sidebar.nav",
+              "server.sidebar.footer",
+              "server.page.extensions",
+              "dashboard.page",
+              "settings.page"
+            ]
+          },
           "component": { "type": "string" },
           "route_path": { "type": "string" },
           "order": { "type": "number" },
-          "col_span": { "type": "number", "minimum": 1, "maximum": 3 }
+          "col_span": { 
+            "type": "number", 
+            "minimum": 1, 
+            "maximum": 3 
+          }
         },
         "required": ["method", "target", "component"]
       }
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "internal_logic": {
+      "type": "object",
+      "properties": {
+        "api_routes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]
+              },
+              "path": { "type": "string" },
+              "handler_export": { "type": "string" },
+              "timeout_ms": { "type": "number" },
+              "description": { "type": "string" }
+            },
+            "required": ["method", "path", "handler_export"]
+          }
+        },
+        "event_listeners": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "event": { "type": "string" },
+              "handler_export": { "type": "string" },
+              "async": { "type": "boolean" },
+              "description": { "type": "string" }
+            },
+            "required": ["event", "handler_export"]
+          }
+        }
+      }
+    },
+    "sandbox_config": {
+      "type": "object",
+      "properties": {
+        "db_collections": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "network.outbound",
+              "server.power.manage",
+              "server.console.read",
+              "server.console.write",
+              "server.files.read",
+              "server.files.write",
+              "server.files.delete",
+              "server.config.read",
+              "server.config.write",
+              "server.backup.create",
+              "server.backup.restore",
+              "tenant.users.read",
+              "tenant.settings.read"
+            ]
+          }
+        },
+        "resource_limits": {
+          "type": "object",
+          "properties": {
+            "memory_mb": { "type": "number" },
+            "timeout_ms": { "type": "number" },
+            "max_db_queries_per_request": { "type": "number" }
+          }
+        }
+      },
+      "required": ["db_collections", "permissions"]
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "icon": { "type": "string" },
+        "category": {
+          "enum": [
+            "notifications",
+            "monitoring",
+            "automation",
+            "integrations",
+            "utilities",
+            "analytics"
+          ]
+        },
+        "homepage": { "type": "string" },
+        "repository": { "type": "string" },
+        "license": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["icon", "category"]
     }
-  }
+  },
+  "required": [
+    "extension_id",
+    "version",
+    "name",
+    "description",
+    "author",
+    "ui_bundle",
+    "handlers_bundle",
+    "sandbox_config",
+    "metadata"
+  ]
 }
