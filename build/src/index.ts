@@ -101,7 +101,7 @@ export async function buildExtension(
         globalName: 'ExtensionExports',
         platform: 'node',
         target: 'es2020',
-        external: ['@gamecp/types', ...handlersExternal],
+        external: ['@gamecp/types', 'react', 'react-dom', ...handlersExternal],
         minify,
         sourcemap: false,
     });
