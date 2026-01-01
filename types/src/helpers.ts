@@ -90,12 +90,51 @@ export const gamecp = {
 };
 
 /**
+ * Return type for useGameCP hook
+ */
+export interface UseGameCPReturn extends GameCPSDK {
+  /** Current locale */
+  locale: string;
+  
+  /** Translation function */
+  t: (translations: Record<string, string>) => string;
+  
+  /** API client */
+  api: {
+    get: (url: string) => Promise<any>;
+    post: (url: string, data?: any) => Promise<any>;
+    put: (url: string, data?: any) => Promise<any>;
+    delete: (url: string, data?: any) => Promise<any>;
+    fetch: (url: string, options?: any) => Promise<any>;
+  };
+  
+  /** Confirmation dialog */
+  confirm: (options: { title: string; message: string; confirmText: string; cancelText?: string; confirmButtonColor?: 'red' | 'blue' | 'green' }) => Promise<boolean>;
+  
+  /** Get extension config */
+  getConfig: (extensionId: string) => Record<string, any>;
+  
+  /** Current authenticated user (null if not logged in) */
+  user: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    role: 'admin' | 'manager' | 'user' | 'demo';
+  } | null;
+}
+
+/**
  * React hook for GameCP SDK
  * 
  * @example
  * ```typescript
  * function MyComponent() {
- *   const { Button, Card, locale, t } = useGameCP();
+ *   const { Button, Card, locale, t, user } = useGameCP();
+ *   
+ *   // Check user role
+ *   if (user?.role !== 'admin') return null;
  *   
  *   return (
  *     <Card title={t(content.title)}>
@@ -105,16 +144,26 @@ export const gamecp = {
  * }
  * ```
  */
-export function useGameCP() {
+export function useGameCP(): UseGameCPReturn {
+  const sdk = getWindow().GameCP_SDK || {};
+  
   return {
-    // UI Components
-    ...getWindow().GameCP_SDK,
+    // UI Components from SDK
+    Link: sdk.Link,
+    Button: sdk.Button,
+    Card: sdk.Card,
+    Badge: sdk.Badge,
+    FormInput: sdk.FormInput,
+    Switch: sdk.Switch,
+    confirm: sdk.confirm || (() => Promise.resolve(false)),
+    locale: sdk.locale || 'en',
+    
+    // User info
+    user: getWindow().GameCP_User || null,
     
     // Helpers
-    locale: gamecp.locale,
     t: gamecp.t.bind(gamecp),
     api: gamecp.api,
-    confirm: gamecp.confirm.bind(gamecp),
     
     // Config helper
     getConfig: (extensionId: string) => getWindow().GameCP_ExtensionConfig?.[extensionId] || {},

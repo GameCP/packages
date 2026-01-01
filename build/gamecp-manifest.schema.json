@@ -143,6 +143,13 @@
             "timeout_ms": { "type": "number" },
             "max_db_queries_per_request": { "type": "number" }
           }
+        },
+        "node_modules": {
+          "type": "array",
+          "items": {
+            "enum": ["mysql2", "pg", "ioredis", "nodemailer", "axios"]
+          },
+          "description": "Node.js modules that the extension requires. These are provided by the platform."
         }
       },
       "required": ["db_collections", "permissions"]

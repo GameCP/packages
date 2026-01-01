@@ -11,7 +11,18 @@ export interface ExtensionContext {
     headers: Record<string, string>;
     method: string;
     path: string;
+    params: Record<string, string>; // Route params like :id
   };
+  
+  /** Authenticated user info (null if not authenticated) */
+  user: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    role: 'admin' | 'manager' | 'user' | 'demo';
+  } | null;
   
   /** Database access */
   db: DatabaseClient;
@@ -33,6 +44,15 @@ export interface ExtensionContext {
     sendCommand: (command: string) => Promise<void>;
     deleteFile: (path: string) => Promise<void>;
   };
+  
+  /** MySQL client (requires node_modules: ["mysql2"]) */
+  mysql?: MySQLClient;
+  
+  /** PostgreSQL client (requires node_modules: ["pg"]) */
+  pg?: PostgreSQLClient;
+  
+  /** Redis client (requires node_modules: ["ioredis"]) */
+  redis?: RedisClient;
 }
 
 export interface DatabaseClient {
@@ -54,10 +74,10 @@ export interface Collection {
   findOne(query: any): Promise<any | null>;
   
   /** Update one document */
-  updateOne(query: any, update: any): Promise<{ modifiedCount: number }>;
+  updateOne(query: any, update: any): Promise<{ modifiedCount: number; matchedCount: number }>;
   
   /** Update multiple documents */
-  updateMany(query: any, update: any): Promise<{ modifiedCount: number }>;
+  updateMany(query: any, update: any): Promise<{ modifiedCount: number; matchedCount: number }>;
   
   /** Delete one document */
   deleteOne(query: any): Promise<{ deletedCount: number }>;
@@ -148,3 +168,61 @@ export type EventHandler = (
   payload: any,
   ctx: ExtensionContext
 ) => Promise<void> | void;
+
+/**
+ * MySQL Client Configuration
+ */
+export interface MySQLConfig {
+  host: string;
+  port: number;
+  user: string;
+  password: string;
+  database?: string;
+}
+
+/**
+ * MySQL Client
+ * Available when node_modules includes "mysql2"
+ */
+export interface MySQLClient {
+  /** Execute a query and return results */
+  query(config: MySQLConfig, sql: string, params?: any[]): Promise<any[]>;
+}
+
+/**
+ * PostgreSQL Client Configuration
+ */
+export interface PostgreSQLConfig {
+  host: string;
+  port: number;
+  user: string;
+  password: string;
+  database?: string;
+}
+
+/**
+ * PostgreSQL Client
+ * Available when node_modules includes "pg"
+ */
+export interface PostgreSQLClient {
+  /** Execute a query and return results */
+  query(config: PostgreSQLConfig, sql: string, params?: any[]): Promise<any[]>;
+}
+
+/**
+ * Redis Client Configuration
+ */
+export interface RedisConfig {
+  host: string;
+  port: number;
+  password?: string;
+}
+
+/**
+ * Redis Client
+ * Available when node_modules includes "ioredis"
+ */
+export interface RedisClient {
+  /** Execute a Redis command */
+  command(config: RedisConfig, command: string, args?: any[]): Promise<any>;
+}

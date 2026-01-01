@@ -12,6 +12,17 @@ export * from './sdk';
 
 // Convenience exports
 export type { ExtensionManifest } from './manifest';
-export type { ExtensionContext, ApiRouteHandler, EventHandler } from './context';
+export type { 
+  ExtensionContext, 
+  ApiRouteHandler, 
+  EventHandler,
+  MySQLConfig,
+  PostgreSQLConfig,
+  RedisConfig,
+  MySQLClient,
+  PostgreSQLClient,
+  RedisClient
+} from './context';
 export type { ExtensionExports, ServerEvent, TypedEventHandler } from './events';
-export type { GameCPSDK, GameCPAPI, GameCPWindow, ButtonProps, CardProps, LinkProps, BadgeProps } from './sdk';
+export type { GameCPSDK, GameCPAPI, GameCPWindow, ButtonProps, CardProps, LinkProps, BadgeProps, FormInputProps, SwitchProps, SelectOption } from './sdk';
+
