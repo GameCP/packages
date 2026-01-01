@@ -49,6 +49,8 @@
               "server.sidebar.nav",
               "server.sidebar.footer",
               "server.page.extensions",
+              "global.sidebar.nav",
+              "global.sidebar.footer",
               "dashboard.page",
               "settings.page"
             ]
