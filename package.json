@@ -13,14 +13,16 @@
     "update:patch": "./update-versions.sh patch",
     "update:minor": "./update-versions.sh minor",
     "update:major": "./update-versions.sh major",
-    "build:all": "cd types && npm run build && cd ../manifest && npm run build && cd ../cli && npm run build",
+    "build:all": "cd types && npm run build && cd ../manifest && npm run build && cd ../cli && npm run build && cd ../build && npm run build",
     "build:types": "cd types && npm run build",
     "build:manifest": "cd manifest && npm run build",
     "build:cli": "cd cli && npm run build",
-    "publish:types": "cd types && npm publish",
-    "publish:manifest": "cd manifest && npm publish",
-    "publish:cli": "cd cli && npm publish",
-    "publish:all": "npm run publish:types && npm run publish:manifest && npm run publish:cli"
+    "build:build": "cd build && npm run build",
+    "publish:types": "cd types && npm publish || true",
+    "publish:manifest": "cd manifest && npm publish || true",
+    "publish:cli": "cd cli && npm publish || true",
+    "publish:build": "cd build && npm publish || true",
+    "publish:all": "npm run publish:types && npm run publish:manifest && npm run publish:cli && npm run publish:build"
   },
   "repository": {
     "type": "git",

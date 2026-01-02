@@ -1,12 +1,17 @@
 {
   "name": "@gamecp/build",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Build tools for GameCP extensions",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "gamecp-build": "./bin/gamecp-build.js"
   },
+  "files": [
+    "dist",
+    "bin",
+    "gamecp-manifest.schema.json"
+  ],
   "scripts": {
     "build": "tsc"
   },
