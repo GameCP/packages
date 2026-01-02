@@ -52,7 +52,12 @@
               "global.sidebar.nav",
               "global.sidebar.footer",
               "dashboard.page",
-              "settings.page"
+              "settings.page",
+              "games.edit.form",
+              "games.edit.navigation",
+              "servers.edit.navigation",
+              "game-servers.new.form",
+              "game-servers.settings.form"
             ]
           },
           "component": { "type": "string" },
@@ -64,8 +69,18 @@
             "maximum": 3 
           },
           "position": {
-            "enum": ["top", "bottom"],
-            "description": "For MOUNT method: where to render the component"
+            "enum": [
+              "top", 
+              "bottom",
+              "before-basic-settings",
+              "after-basic-settings",
+              "before-advanced-settings",
+              "after-advanced-settings",
+              "before-submit",
+              "after-submit",
+              "end"
+            ],
+            "description": "For MOUNT method: top/bottom. For AUGMENT method: form injection points"
           }
         },
         "required": ["method", "target", "component"]

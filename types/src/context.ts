@@ -30,6 +30,9 @@ export interface ExtensionContext {
   /** HTTP client for making external requests */
   http: HttpClient;
   
+  /** Internal API client for calling GameCP APIs */
+  api: ApiClient;
+  
   /** Extension configuration from gamecp.json */
   config: Record<string, any>;
   
@@ -131,6 +134,27 @@ export interface HttpResponse {
   statusText: string;
   data: any;
   headers: Record<string, string>;
+}
+
+/**
+ * Internal API Client
+ * For making authenticated requests to GameCP APIs
+ */
+export interface ApiClient {
+  /** Make GET request to internal API */
+  get(path: string): Promise<any>;
+  
+  /** Make POST request to internal API */
+  post(path: string, data?: any): Promise<any>;
+  
+  /** Make PUT request to internal API */
+  put(path: string, data?: any): Promise<any>;
+  
+  /** Make DELETE request to internal API */
+  delete(path: string): Promise<any>;
+  
+  /** Make PATCH request to internal API */
+  patch(path: string, data?: any): Promise<any>;
 }
 
 export interface Logger {
