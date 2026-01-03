@@ -15,6 +15,11 @@ type IconConfig =
   | React.ReactNode
   | { left?: React.ReactNode; right?: React.ReactNode };
 
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
 interface FormInputProps {
   label: string;
   name: string;
@@ -27,11 +32,13 @@ interface FormInputProps {
   | 'url'
   | 'checkbox'
   | 'textarea'
-  | 'color';
+  | 'color'
+  | 'select';
   value: string | number | boolean;
   onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => void;
+  options?: SelectOption[];
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
