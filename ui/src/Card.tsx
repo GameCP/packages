@@ -79,6 +79,7 @@ interface CardProps extends AccordionCardProps, StatusCardProps {
   overflow?: 'visible' | 'hidden' | 'scroll' | 'auto';
   minHeight?: string;
   maxHeight?: string;
+  id?: string;
 }
 
 // Padding class mapping
@@ -167,6 +168,7 @@ export default function Card({
   status,
   statusIcon,
   statusText,
+  id,
 }: CardProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
@@ -204,6 +206,7 @@ export default function Card({
 
   return (
     <div
+      id={id}
       className={`${baseClasses} ${className}`}
       style={style}
       onClick={clickable || onClick ? handleClick : undefined}

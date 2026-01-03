@@ -1,3 +1,5 @@
+'use client';
+
 import { RiArrowDownSLine } from 'react-icons/ri';
 
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2' | '3' | '4' | '5' | '6';

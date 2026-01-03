@@ -9,19 +9,21 @@ import {
   RiFileCopyLine,
   RiCheckLine,
 } from 'react-icons/ri';
+import { SmartSelect } from './SmartDropdown';
+import { SkeletonItem } from './Skeleton';
 
+interface SelectOption {
+  value: string;
+  label: string;
+  description?: string;
+}
 
 type IconConfig =
   | React.ReactNode
   | { left?: React.ReactNode; right?: React.ReactNode };
 
-interface SelectOption {
-  value: string;
-  label: string;
-}
-
 interface FormInputProps {
-  label: string;
+  label?: string;
   name: string;
   type?:
   | 'text'
@@ -30,15 +32,14 @@ interface FormInputProps {
   | 'number'
   | 'tel'
   | 'url'
+  | 'select'
   | 'checkbox'
   | 'textarea'
-  | 'color'
-  | 'select';
+  | 'color';
   value: string | number | boolean;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => void;
-  options?: SelectOption[];
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
@@ -61,17 +62,23 @@ interface FormInputProps {
   ) => void;
   // Icon props
   icon?: IconConfig;
+  // Select-specific props
+  options?: SelectOption[];
+  multiSelect?: boolean;
+  selectWidth?: number;
+  searchable?: boolean;
+  clearable?: boolean;
   // Textarea-specific props
   rows?: number;
   // Password-specific props
   showHidePassword?: boolean;
-  onGeneratePassword?: () => void;
+  onGeneratePassword?: () => void; // New prop for password generation
+  // Loading state
+  isLoading?: boolean;
   // Copy to clipboard
   copyable?: boolean;
   // Read-only display (no onChange required)
   readOnly?: boolean;
-  // Clearable
-  clearable?: boolean;
 }
 
 export default function FormInput({
@@ -80,7 +87,6 @@ export default function FormInput({
   type = 'text',
   value,
   onChange,
-  options,
   placeholder,
   required = false,
   disabled = false,
@@ -98,12 +104,17 @@ export default function FormInput({
   onKeyDown,
   onBlur,
   icon,
+  options = [],
+  multiSelect = false,
+  selectWidth,
+  searchable = false,
+  clearable = true,
   rows = 3,
   showHidePassword = false,
   onGeneratePassword,
+  isLoading = false,
   copyable = false,
   readOnly = false,
-  clearable = true,
 }: FormInputProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -191,9 +202,131 @@ export default function FormInput({
     return paddingClasses.join(' ');
   };
 
+  const handleSelectChange = (selectedValue: string) => {
+    // Create a synthetic event to maintain compatibility with existing onChange handlers
+    const syntheticEvent = {
+      target: {
+        name,
+        value: selectedValue,
+      },
+    } as React.ChangeEvent<HTMLInputElement>;
+
+    onChange(syntheticEvent);
+  };
+
+  // Skeleton component for loading state - shows real labels, skeletons only the input
+  const SkeletonInput = () => {
+    const iconConfig = getIconConfig(icon);
+    const hasLeftIcon = iconConfig.left;
+    const hasRightIcon = iconConfig.right;
+
+    if (type === 'checkbox') {
+      return (
+        <div className="flex items-center p-2 space-x-3 h-full">
+          <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-muted">
+            <span className="inline-block h-4 w-4 transform rounded-full bg-white border border-border translate-x-1" />
+          </div>
+          <div className="flex flex-col">
+            <label className="form-label">
+              {label}
+              {required && <span className="text-destructive ml-1">*</span>}
+            </label>
+            {description && (
+              <p className="text-sm text-muted-foreground">{description}</p>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    if (type === 'textarea') {
+      return (
+        <div className="space-y-2">
+          <label className="form-label">
+            {label}
+            {required && <span className="text-red-500 ml-1">*</span>}
+          </label>
+          {description && (
+            <p className="text-sm text-secondary-foreground">{description}</p>
+          )}
+          <div className="relative">
+            <SkeletonItem
+              width="w-full"
+              height="h-24"
+              className={`rounded-md`}
+            />
+          </div>
+          {footerDescription && (
+            <p className="text-sm text-secondary-foreground">
+              {footerDescription}
+            </p>
+          )}
+        </div>
+      );
+    }
+
+    if (type === 'color') {
+      return (
+        <div className="space-y-2">
+          <label className="form-label">
+            {label}
+            {required && <span className="text-red-500 ml-1">*</span>}
+          </label>
+          {description && (
+            <p className="text-sm text-secondary-foreground">{description}</p>
+          )}
+          <div className="flex items-center space-x-3">
+            <SkeletonItem width="w-10" height="h-10" className="rounded-md" />
+            <div className="relative">
+              <SkeletonItem width="w-24" height="h-10" className="rounded-md" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Default input skeleton (text, email, password, number, tel, url, select)
+    return (
+      <div>
+        <label className="form-label">
+          {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+        {description && (
+          <p className="text-sm text-secondary-foreground">{description}</p>
+        )}
+        <div className="relative">
+          <SkeletonItem
+            width="w-full"
+            height="h-10"
+            className={`rounded-md ${hasLeftIcon ? 'pl-10' : ''
+              } ${hasRightIcon ? 'pr-10' : ''}`}
+          />
+          {hasLeftIcon && (
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+              <SkeletonItem width="w-5" height="h-5" className="rounded-full" />
+            </div>
+          )}
+          {hasRightIcon && (
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <SkeletonItem width="w-5" height="h-5" className="rounded-full" />
+            </div>
+          )}
+        </div>
+        {footerDescription && (
+          <p className="text-sm text-secondary-foreground">
+            {footerDescription}
+          </p>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className={`form-group ${className}`}>
-      {type === 'checkbox' ? (
+      {isLoading ? (
+        <SkeletonInput />
+      ) : type === 'checkbox' ? (
         <div className="flex items-center p-2 space-x-3 h-full">
           {/* Visually hidden but accessible checkbox for form submission and accessibility */}
           <input
@@ -320,34 +453,59 @@ export default function FormInput({
             </p>
           )}
           {type === 'select' ? (
-            <select
-              id={name}
-              name={name}
-              value={value as string}
-              onChange={onChange as (e: React.ChangeEvent<HTMLSelectElement>) => void}
-              required={required}
-              disabled={disabled}
-              className={`form-input ${error ? 'form-input-error' : ''} ${inputClassName}`}
-              aria-invalid={error ? 'true' : 'false'}
-              aria-describedby={
-                error
-                  ? `${name}-error`
-                  : description
-                    ? `${name}-description`
-                    : undefined
-              }
-            >
-              {placeholder && (
-                <option value="" disabled>
-                  {placeholder}
-                </option>
-              )}
-              {options?.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <SmartSelect
+                value={
+                  multiSelect
+                    ? Array.isArray(value)
+                      ? value
+                      : value
+                        ? String(value).split(',')
+                        : []
+                    : String(value)
+                }
+                onChange={
+                  multiSelect
+                    ? (selectedValue: string | string[]) => {
+                      // Create a synthetic event for the select change
+                      const syntheticEvent = {
+                        target: {
+                          name,
+                          value: Array.isArray(selectedValue) ? selectedValue.join(',') : selectedValue,
+                        },
+                      } as React.ChangeEvent<HTMLSelectElement>;
+                      onChange(syntheticEvent);
+                    }
+                    : (selectedValue: string | string[]) => {
+                      // Create a synthetic event for the select change
+                      const syntheticEvent = {
+                        target: {
+                          name,
+                          value: selectedValue,
+                        },
+                      } as React.ChangeEvent<HTMLSelectElement>;
+                      onChange(syntheticEvent);
+                    }
+                }
+                options={options}
+                placeholder={placeholder || 'Select an option...'}
+                className={`form-input ${error ? 'form-input-error' : ''} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${getInputPaddingClasses(type, getIconConfig(icon))} ${inputClassName}`}
+                multiple={multiSelect}
+                width={selectWidth}
+                searchable={searchable}
+                clearable={clearable}
+              />
+              {shouldShowIcons(type) &&
+                (() => {
+                  const iconConfig = getIconConfig(icon);
+                  return (
+                    <>
+                      {renderIcon(iconConfig.left, 'left')}
+                      {renderIcon(iconConfig.right, 'right')}
+                    </>
+                  );
+                })()}
+            </div>
           ) : type === 'textarea' ? (
             <textarea
               id={name}
