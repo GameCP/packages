@@ -15,13 +15,14 @@ export { default as EmptyState } from './EmptyState';
 export { default as FormInput } from './FormInput';
 export { default as FormSection } from './FormSection';
 export { default as Grid } from './Grid';
+export { default as InfoBox } from './InfoBox';
 export { default as Link } from './Link';
 export { default as LoadingSpinner } from './LoadingSpinner';
 export { default as Modal } from './Modal';
 export { default as PageHeader } from './PageHeader';
 export { default as Switch } from './Switch';
 export { default as SmartDropdown, SmartSelect } from './SmartDropdown';
-export { Skeleton, SkeletonItem } from './Skeleton';
+export { Skeleton, SkeletonItem, SkeletonCard, SkeletonTable, SkeletonList, SkeletonSearchCard, SkeletonGameServerCard, SkeletonGameCard, SkeletonUserCard, SkeletonNodeCard, SkeletonTenantCard, SkeletonStats, SkeletonRecentActivity, SkeletonForm, SkeletonGameServerCards, SkeletonNodeCards, SkeletonNodeTable, SkeletonGameServerTable, SkeletonGamesTable, SkeletonEnvironmentsList } from './Skeleton';
 export { Typography } from './Typography';
 
 // Type exports
