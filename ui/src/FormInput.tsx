@@ -80,6 +80,7 @@ export default function FormInput({
   type = 'text',
   value,
   onChange,
+  options,
   placeholder,
   required = false,
   disabled = false,
@@ -318,7 +319,36 @@ export default function FormInput({
               {description}
             </p>
           )}
-          {type === 'textarea' ? (
+          {type === 'select' ? (
+            <select
+              id={name}
+              name={name}
+              value={value as string}
+              onChange={onChange as (e: React.ChangeEvent<HTMLSelectElement>) => void}
+              required={required}
+              disabled={disabled}
+              className={`form-input ${error ? 'form-input-error' : ''} ${inputClassName}`}
+              aria-invalid={error ? 'true' : 'false'}
+              aria-describedby={
+                error
+                  ? `${name}-error`
+                  : description
+                    ? `${name}-description`
+                    : undefined
+              }
+            >
+              {placeholder && (
+                <option value="" disabled>
+                  {placeholder}
+                </option>
+              )}
+              {options?.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          ) : type === 'textarea' ? (
             <textarea
               id={name}
               name={name}
