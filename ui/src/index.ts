@@ -25,6 +25,15 @@ export { default as SmartDropdown, SmartSelect } from './SmartDropdown';
 export { Skeleton, SkeletonItem, SkeletonCard, SkeletonTable, SkeletonList, SkeletonSearchCard, SkeletonGameServerCard, SkeletonGameCard, SkeletonUserCard, SkeletonNodeCard, SkeletonTenantCard, SkeletonStats, SkeletonRecentActivity, SkeletonForm, SkeletonGameServerCards, SkeletonNodeCards, SkeletonNodeTable, SkeletonGameServerTable, SkeletonGamesTable, SkeletonEnvironmentsList } from './Skeleton';
 export { Typography } from './Typography';
 
+// Data Display Components
+export { DataTable, DataTableHeader, DataTableBody, DataTableRow, DataTableCell, DataTableHeaderCell, DataTableEmptyState, DataTableLoadingState, DataTableActions, StickyActionsColumn, StatusBadge } from './DataTable';
+export { SearchCard, SearchCardHeader, SearchCardContent, SearchInput, FilterSelect, RefreshButton, FilterToggleButton, MobileSearchLayout } from './SearchCard';
+export { default as ViewToggle } from './ViewToggle';
+export { default as ActionButton } from './buttons/ActionButton';
+export { default as SharedTooltip } from './SharedTooltip';
+export { default as Spinner } from './Spinner';
+export { default as IconButtonWithCount } from './IconButtonWithCount';
+
 // Type exports
 export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
 export type { BadgeVariant, BadgeSize } from './Badge';
