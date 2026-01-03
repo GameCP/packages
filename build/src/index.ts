@@ -85,7 +85,48 @@ export async function buildExtension(
         globalName: 'ExtensionExports',
         platform: 'browser',
         target: 'es2020',
-        external: ['react', 'react-dom', '@gamecp/types/client', ...uiExternal],
+        external: [
+            'react', 
+            'react-dom', 
+            '@gamecp/types/client', 
+            '@gamecp/ui',
+            'next-intlayer',
+            'intlayer',
+            'react-tooltip',
+            'framer-motion',
+            'next',
+            ...uiExternal
+        ],
+        plugins: [
+            {
+                name: 'externalize-packages',
+                setup(build) {
+                    build.onResolve({ filter: /.*/ }, (args) => {
+                        // Handle @gamecp/ui imports (including when resolved as a symlink)
+                        if (args.path.startsWith('@gamecp/ui')) {
+                            return { path: '@gamecp/ui', external: true };
+                        }
+                        // Check if resolving from packages/ui directory (symlink followed)
+                        if (args.resolveDir?.includes('packages/ui')) {
+                            return { path: args.path, external: true };
+                        }
+                        // Handle react-icons submodules
+                        if (args.path.startsWith('react-icons/')) {
+                            return { path: args.path, external: true };
+                        }
+                        // Handle next submodules
+                        if (args.path.startsWith('next/')) {
+                            return { path: args.path, external: true };
+                        }
+                        // Handle @intlayer submodules
+                        if (args.path.startsWith('@intlayer/')) {
+                            return { path: args.path, external: true };
+                        }
+                        return undefined; // Let esbuild handle other imports
+                    });
+                }
+            }
+        ],
         minify,
         sourcemap: false,
     });
