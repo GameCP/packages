@@ -82,11 +82,6 @@ export const gamecp = {
     const locale = this.locale;
     return translations[locale] || translations.en;
   },
-
-  /** Confirmation dialog */
-  confirm(options: { title: string; message: string; confirmText: string; cancelText?: string }) {
-    return getWindow().GameCP_SDK.confirm(options);
-  },
 };
 
 /**
@@ -107,9 +102,6 @@ export interface UseGameCPReturn {
     delete: (url: string, data?: any) => Promise<any>;
     fetch: (url: string, options?: any) => Promise<any>;
   };
-  
-  /** Confirmation dialog */
-  confirm: (options: { title: string; message: string; confirmText: string; cancelText?: string; confirmButtonColor?: 'red' | 'blue' | 'green' }) => Promise<boolean>;
   
   /** Get extension config */
   getConfig: (extensionId: string) => Record<string, any>;
@@ -134,19 +126,23 @@ export interface UseGameCPReturn {
  * @example
  * ```typescript
  * import { useGameCP } from '@gamecp/types/client';
- * import { Card, Button } from '@gamecp/ui';
+ * import { Card, Button, useConfirmDialog } from '@gamecp/ui';
  * 
  * function MyComponent() {
- *   const { api, confirm, t, user, Link } = useGameCP();
+ *   const { api, t, user, Link } = useGameCP();
+ *   const { confirm, dialog } = useConfirmDialog();
  *   
  *   // Check user role
  *   if (user?.role !== 'admin') return null;
  *   
  *   return (
- *     <Card title={t(content.title)}>
- *       <Button>Click me</Button>
- *       <Link href="/extensions/my-extension">Go to extension</Link>
- *     </Card>
+ *     <>
+ *       <Card title={t(content.title)}>
+ *         <Button>Click me</Button>
+ *         <Link href="/extensions/my-extension">Go to extension</Link>
+ *       </Card>
+ *       {dialog}
+ *     </>
  *   );
  * }
  * ```
@@ -159,7 +155,6 @@ export function useGameCP(): UseGameCPReturn {
     Link: sdk.Link,
     
     // Utilities
-    confirm: sdk.confirm || (() => Promise.resolve(false)),
     locale: sdk.locale || 'en',
     
     // User info
