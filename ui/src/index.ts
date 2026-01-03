@@ -19,18 +19,11 @@ export { default as Modal } from './Modal';
 export { default as PageHeader } from './PageHeader';
 export { default as Switch } from './Switch';
 
-// Types
-export type { BadgeProps, BadgeVariant, BadgeSize } from './Badge';
+// Type exports
 export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
-export type { CardProps } from './Card';
-export type { ConfirmDialogOptions } from './ConfirmDialog';
-export type { FormSectionProps } from './FormSection';
-export type { GridProps, GridItemProps } from './Grid';
+export type { BadgeVariant, BadgeSize } from './Badge';
 export type { LinkProps } from './Link';
-export type { LoadingSpinnerProps, SpinnerSize } from './LoadingSpinner';
-export type { ModalProps } from './Modal';
-export type { PageHeaderProps } from './PageHeader';
-export type { SwitchProps } from './Switch';
+export type { ConfirmDialogOptions } from './ConfirmDialog';
 
 // Version
-export const VERSION = '0.1.0';
+export const VERSION = '0.1.3';
