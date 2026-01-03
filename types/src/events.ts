@@ -54,6 +54,25 @@ export interface PlayerLeavePayload {
   timestamp?: Date;
 }
 
+export interface ServerCreatedPayload {
+  serverId: string;
+  serverName: string;
+  serverSlug: string;
+  nodeId: string;
+  ownerId: string;
+  gameId: string;
+  timestamp?: Date;
+}
+
+export interface ServerDeletedPayload {
+  serverId: string;
+  serverName: string;
+  serverSlug: string;
+  nodeId?: string;
+  ownerId?: string;
+  timestamp?: Date;
+}
+
 /**
  * Common event types
  */
@@ -64,6 +83,8 @@ export type ServerEvent =
   | 'server.player.join'
   | 'server.player.leave'
   | 'server.console.output'
+  | 'server.lifecycle.created'
+  | 'server.lifecycle.deleted'
   | 'cron.tick';
 
 /**
@@ -76,6 +97,8 @@ export interface EventPayloadMap {
   'server.player.join': PlayerJoinPayload;
   'server.player.leave': PlayerLeavePayload;
   'server.console.output': { line: string; serverId: string };
+  'server.lifecycle.created': ServerCreatedPayload;
+  'server.lifecycle.deleted': ServerDeletedPayload;
   'cron.tick': { task: any };
 }
 

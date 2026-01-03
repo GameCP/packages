@@ -92,7 +92,7 @@ export const gamecp = {
 /**
  * Return type for useGameCP hook
  */
-export interface UseGameCPReturn extends GameCPSDK {
+export interface UseGameCPReturn {
   /** Current locale */
   locale: string;
   
@@ -114,6 +114,9 @@ export interface UseGameCPReturn extends GameCPSDK {
   /** Get extension config */
   getConfig: (extensionId: string) => Record<string, any>;
   
+  /** Navigation Link component */
+  Link: any;
+  
   /** Current authenticated user (null if not logged in) */
   user: {
     id: string;
@@ -130,8 +133,11 @@ export interface UseGameCPReturn extends GameCPSDK {
  * 
  * @example
  * ```typescript
+ * import { useGameCP } from '@gamecp/types/client';
+ * import { Card, Button } from '@gamecp/ui';
+ * 
  * function MyComponent() {
- *   const { Button, Card, locale, t, user } = useGameCP();
+ *   const { api, confirm, t, user, Link } = useGameCP();
  *   
  *   // Check user role
  *   if (user?.role !== 'admin') return null;
@@ -139,6 +145,7 @@ export interface UseGameCPReturn extends GameCPSDK {
  *   return (
  *     <Card title={t(content.title)}>
  *       <Button>Click me</Button>
+ *       <Link href="/extensions/my-extension">Go to extension</Link>
  *     </Card>
  *   );
  * }
@@ -148,13 +155,10 @@ export function useGameCP(): UseGameCPReturn {
   const sdk = getWindow().GameCP_SDK || {};
   
   return {
-    // UI Components from SDK
+    // Navigation component from SDK
     Link: sdk.Link,
-    Button: sdk.Button,
-    Card: sdk.Card,
-    Badge: sdk.Badge,
-    FormInput: sdk.FormInput,
-    Switch: sdk.Switch,
+    
+    // Utilities
     confirm: sdk.confirm || (() => Promise.resolve(false)),
     locale: sdk.locale || 'en',
     
