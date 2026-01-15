@@ -29,8 +29,8 @@ export default function SharedTooltip({
       offset={offset}
       delayShow={delayShow}
       delayHide={delayHide}
-      className={`!bg-popover !text-popover-foreground !border !border-border !shadow-md !text-xs !px-2 !py-1 !rounded-md z-50 ${className}`}
-      style={style}
+      className={`!bg-popover !text-popover-foreground !border !border-border !shadow-md !text-xs !px-2 !py-1 !rounded-md ${className}`}
+      style={{ zIndex: 9999, ...style }}
       positionStrategy="fixed"
       render={children ? () => <>{children}</> : undefined}
     />

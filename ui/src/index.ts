@@ -39,6 +39,7 @@ export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
 export type { BadgeVariant, BadgeSize } from './Badge';
 export type { LinkProps } from './Link';
 export type { ConfirmDialogOptions } from './ConfirmDialog';
+export type { SwitchVariant } from './Switch';
 
 // Version
 export const VERSION = '0.1.3';

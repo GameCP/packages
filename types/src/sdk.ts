@@ -163,6 +163,11 @@ export interface FormInputProps {
 }
 
 /**
+ * Switch Component Variant Types
+ */
+export type SwitchVariant = 'default' | 'success' | 'danger' | 'warning' | 'info' | 'embedded';
+
+/**
  * Switch Component Props
  */
 export interface SwitchProps {
@@ -173,11 +178,15 @@ export interface SwitchProps {
   /** Whether switch is disabled */
   disabled?: boolean;
   /** Label for the switch */
-  label?: string;
+  label?: React.ReactNode | string;
   /** Description text */
-  description?: string;
+  description?: React.ReactNode | string;
   /** Additional class */
   className?: string;
+  /** Size of the switch */
+  size?: 'sm' | 'md' | 'lg';
+  /** Visual variant of the switch */
+  variant?: SwitchVariant;
 }
 
 /**
