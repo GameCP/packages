@@ -90,8 +90,6 @@ export async function buildExtension(
             'react-dom', 
             '@gamecp/types/client', 
             '@gamecp/ui',
-            'next-intlayer',
-            'intlayer',
             'react-tooltip',
             'framer-motion',
             'next',
@@ -116,10 +114,6 @@ export async function buildExtension(
                         }
                         // Handle next submodules
                         if (args.path.startsWith('next/')) {
-                            return { path: args.path, external: true };
-                        }
-                        // Handle @intlayer submodules
-                        if (args.path.startsWith('@intlayer/')) {
                             return { path: args.path, external: true };
                         }
                         return undefined; // Let esbuild handle other imports

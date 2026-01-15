@@ -3,7 +3,6 @@
 import React, { useState, useCallback } from 'react';
 import Link from 'next/link';
 import SharedTooltip from '../SharedTooltip';
-import { useIntlayer } from 'next-intlayer';
 import {
   RiEditLine,
   RiEditFill,
@@ -129,83 +128,80 @@ export default function ActionButton({
 
   const paddingClasses = iconOnly ? (terminalMode ? '' : 'p-2') : 'px-3 py-1.5';
 
-  // Get translations
-  const t = useIntlayer('action-button');
-
   const getVariantConfig = () => {
     switch (variant) {
       case 'edit':
         return {
           icon: fill ? RiEditFill : RiEditLine,
-          label: t.edit,
+          label: 'Edit',
           className: 'btn-secondary',
         };
       case 'delete':
         return {
           icon: fill ? RiDeleteBinFill : RiDeleteBinLine,
-          label: t.delete,
+          label: 'Delete',
           className: 'btn-danger',
         };
       case 'deactivate':
         return {
           icon: fill ? RiStopCircleFill : RiStopCircleLine,
-          label: t.deactivate,
+          label: 'Deactivate',
           className:
             'bg-slate-50  text-slate-600 hover:bg-slate-100 hover:text-slate-700 border border-slate-200 transition-all duration-300 ease-in-out',
         };
       case 'activate':
         return {
           icon: fill ? RiPlayCircleFill : RiPlayCircleLine,
-          label: t.activate,
+          label: 'Activate',
           className:
             'bg-emerald/10  text-emerald hover:bg-emerald/20 hover:text-emerald-700 border border-emerald-200 transition-all duration-300 ease-in-out',
         };
       case 'view':
         return {
           icon: fill ? RiEyeFill : RiEyeLine,
-          label: t.view,
+          label: 'View',
           className:
             'bg-muted  text-muted-foreground hover:bg-muted hover:text-foreground border border-border transition-all duration-300 ease-in-out',
         };
       case 'metrics':
         return {
           icon: fill ? RiBarChartFill : RiBarChartLine,
-          label: t.metrics,
+          label: 'Metrics',
           className:
             'bg-purple/10  text-purple-600 hover:bg-purple-100 hover:text-purple-700 border border-purple-200 transition-all duration-300 ease-in-out',
         };
       case 'start':
         return {
           icon: fill ? RiPlayFill : RiPlayLine,
-          label: t.start,
+          label: 'Start',
           className:
             'bg-success/10 text-success hover:bg-success/20 hover:text-success border border-success transition-all duration-300 ease-in-out',
         };
       case 'stop':
         return {
           icon: fill ? RiStopFill : RiStopLine,
-          label: t.stop,
+          label: 'Stop',
           className:
             'bg-danger/10 text-danger hover:bg-danger/20 hover:text-danger border border-danger transition-all duration-300 ease-in-out',
         };
       case 'restart':
         return {
           icon: fill ? RiRestartFill : RiRestartLine,
-          label: t.restart,
+          label: 'Restart',
           className:
             'bg-orange/10  text-orange hover:bg-orange/20 hover:text-orange-700 border border-orange/30 transition-all duration-300 ease-in-out',
         };
       case 'pause':
         return {
           icon: fill ? RiPauseFill : RiPauseLine,
-          label: t.pause,
+          label: 'Pause',
           className:
             'bg-amber/10 text-amber hover:bg-amber/20 hover:text-amber border border-amber transition-all duration-300 ease-in-out',
         };
       case 'clone':
         return {
           icon: fill ? RiFileCopyFill : RiFileCopyLine,
-          label: t.clone,
+          label: 'Clone',
           className:
             'bg-indigo/10  text-indigo hover:bg-indigo/20 hover:text-indigo-700 border border-indigo-200 transition-all duration-300 ease-in-out',
         };
@@ -302,7 +298,7 @@ export default function ActionButton({
       ? variantConfig?.label || label || 'Action button'
       : accessibleLabel;
 
-  // Tooltip content can be ReactNode (Intlayer object) or string
+  // Tooltip content can be ReactNode or string
   const tooltipContent = title || (iconOnly ? variantConfig?.label || label : undefined);
 
   const buttonClassName = `
