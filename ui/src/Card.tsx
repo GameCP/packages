@@ -18,10 +18,10 @@ type CardPadding = 'none' | 'sm' | 'md' | 'lg' | 'xl';
 // Border accent variants
 type BorderAccent =
   | 'none'
-  | 'green'
-  | 'blue'
-  | 'red'
-  | 'yellow'
+  | 'success'
+  | 'info'
+  | 'danger'
+  | 'amber'
   | 'purple'
   | 'orange'
   | 'gray';
@@ -42,10 +42,10 @@ interface HeaderCardProps extends InteractiveCardProps {
   description?: string;
   icon?: IconType;
   iconColor?:
-  | 'green'
-  | 'blue'
-  | 'red'
-  | 'yellow'
+  | 'success'
+  | 'info'
+  | 'danger'
+  | 'amber'
   | 'purple'
   | 'orange'
   | 'gray'
@@ -80,6 +80,9 @@ interface CardProps extends AccordionCardProps, StatusCardProps {
   minHeight?: string;
   maxHeight?: string;
   id?: string;
+  headerBorder?: string;
+  headerBg?: string;
+  headerStatus?: 'online' | 'offline' | 'maintenance' | 'error' | 'restarting' | 'starting' | 'success' | 'info' | 'updating' | 'unknown';
 }
 
 // Padding class mapping
@@ -94,13 +97,13 @@ const paddingClasses: Record<CardPadding, string> = {
 // Border accent class mapping
 const borderAccentClasses: Record<BorderAccent, string> = {
   none: '',
-  green: 'border-l-4 border-l-green-500',
-  blue: 'border-l-4 border-l-ring',
-  red: 'border-l-4 border-l-red-500',
-  yellow: 'border-l-4 border-l-yellow-500',
-  purple: 'border-l-4 border-l-purple-500',
-  orange: 'border-l-4 border-l-orange-500',
-  gray: 'border-l-4 border-l-gray-500',
+  success: 'border-l-4 border-l-success',
+  info: 'border-l-4 border-l-info',
+  danger: 'border-l-4 border-l-danger',
+  amber: 'border-l-4 border-l-amber',
+  purple: 'border-l-4 border-l-purple',
+  orange: 'border-l-4 border-l-orange',
+  gray: 'border-l-4 border-l-gray',
 };
 
 // Variant class mapping
@@ -113,15 +116,15 @@ const variantClasses: Record<CardVariant, string> = {
 
 // Icon color class mapping
 const iconColorClasses: Record<string, string> = {
-  green: 'text-success',
-  blue: 'text-primary',
-  red: 'text-destructive',
-  yellow: 'text-yellow-600',
-  purple: 'text-purple-600',
-  orange: 'text-orange-600',
+  success: 'text-success',
+  info: 'text-info',
+  danger: 'text-danger',
+  amber: 'text-amber',
+  purple: 'text-purple',
+  orange: 'text-orange',
   gray: 'text-muted-foreground',
-  indigo: 'text-indigo-600',
-  pink: 'text-pink-600',
+  indigo: 'text-indigo',
+  pink: 'text-pink',
 };
 
 // Icon size class mapping
@@ -133,10 +136,10 @@ const iconSizeClasses: Record<string, string> = {
 
 // Status class mapping
 const statusClasses: Record<string, string> = {
-  success: 'bg-success-light border-success-light',
-  warning: 'bg-yellow-50 border-yellow-200',
-  error: 'bg-destructive border-destructive',
-  info: 'bg-primary border-primary',
+  success: 'bg-success/10 border-success',
+  warning: 'bg-amber/10 border-amber',
+  error: 'bg-danger/10 border-danger',
+  info: 'bg-info/10 border-info',
   neutral: 'bg-muted border-border',
 };
 
@@ -157,7 +160,7 @@ export default function Card({
   subtitle,
   description,
   icon: Icon,
-  iconColor = 'blue',
+  iconColor = 'info',
   iconSize = 'md',
   actionButton,
   headerClassName = '',
@@ -168,16 +171,47 @@ export default function Card({
   status,
   statusIcon,
   statusText,
+  headerBorder,
+  headerBg,
+  headerStatus,
   id,
 }: CardProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+
+  // Map header status to border and bg classes
+  const getHeaderStatusClasses = (status: CardProps['headerStatus']) => {
+    switch (status) {
+      case 'online':
+      case 'success':
+        return { border: 'bg-success', bg: 'status-running-bg-50' };
+      case 'offline':
+      case 'error':
+        return { border: 'bg-destructive', bg: 'status-error-bg-50' };
+      case 'maintenance':
+      case 'starting':
+      case 'info':
+        return { border: 'bg-warning', bg: 'status-starting-bg-50' };
+      case 'restarting':
+      case 'updating':
+        return { border: 'bg-orange', bg: 'status-restarting-bg-50' };
+      case 'unknown':
+        return { border: 'bg-muted-foreground/30', bg: 'bg-muted/10' };
+      default:
+        return { border: headerBorder, bg: headerBg };
+    }
+  };
+
+  const statusClassesMapped = getHeaderStatusClasses(headerStatus);
+  const activeHeaderBorder = statusClassesMapped?.border || headerBorder;
+  const activeHeaderBg = statusClassesMapped?.bg || headerBg;
 
   // Build base classes
   const baseClasses = [
     variantClasses[variant],
     paddingClasses[padding],
     borderAccentClasses[borderAccent],
-    overflow !== 'visible' ? `overflow-${overflow}` : '',
+    overflow !== 'visible' || activeHeaderBorder ? `overflow-${overflow === 'visible' && activeHeaderBorder ? 'hidden' : overflow}` : '',
+    activeHeaderBorder ? 'relative' : '',
     hover ? 'hover:shadow-md transition-shadow' : '',
     clickable || onClick ? 'cursor-pointer' : '',
     disabled ? 'opacity-50 cursor-not-allowed' : '',
@@ -211,9 +245,16 @@ export default function Card({
       style={style}
       onClick={clickable || onClick ? handleClick : undefined}
     >
+      {/* Header Accent */}
+      {activeHeaderBorder && (
+        <div className="absolute top-0 left-0 right-0 flex justify-center z-10 pointer-events-none">
+          <div className={`h-1.5 w-24 ${activeHeaderBorder} rounded-b-xl shadow-sm`} />
+        </div>
+      )}
+
       {/* Header Section */}
       {(title || subtitle || description || Icon || actionButton || status) && (
-        <div className={`${headerClassName}`}>
+        <div className={`${activeHeaderBg ? activeHeaderBg + ' ' : ''}${headerClassName}${activeHeaderBorder ? ' pt-6 pb-4 px-4' : ''}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
               {/* Icon */}

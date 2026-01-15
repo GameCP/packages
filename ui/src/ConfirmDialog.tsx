@@ -9,7 +9,7 @@ export interface ConfirmDialogOptions {
     message: string;
     confirmText: string;
     cancelText?: string;
-    confirmButtonColor?: 'red' | 'blue' | 'green';
+    confirmButtonColor?: 'danger' | 'info' | 'success';
 }
 
 interface ConfirmDialogProps {
@@ -20,15 +20,15 @@ interface ConfirmDialogProps {
 }
 
 export function ConfirmDialog({ isOpen, options, onConfirm, onCancel }: ConfirmDialogProps) {
-    const { title, message, confirmText, cancelText = 'Cancel', confirmButtonColor = 'blue' } = options;
+    const { title, message, confirmText, cancelText = 'Cancel', confirmButtonColor = 'info' } = options;
 
     const getConfirmVariant = () => {
         switch (confirmButtonColor) {
-            case 'red':
+            case 'danger':
                 return 'danger' as const;
-            case 'green':
+            case 'success':
                 return 'primary' as const;
-            case 'blue':
+            case 'info':
             default:
                 return 'primary' as const;
         }
@@ -64,7 +64,7 @@ export function ConfirmDialog({ isOpen, options, onConfirm, onCancel }: ConfirmD
  *     title: 'Delete Item',
  *     message: 'Are you sure you want to delete this item?',
  *     confirmText: 'Delete',
- *     confirmButtonColor: 'red'
+ *     confirmButtonColor: 'danger'
  *   });
  *   
  *   if (confirmed) {

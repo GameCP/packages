@@ -33,9 +33,9 @@ export default function ClearButton({
 
   const variantClasses = {
     overlay:
-      'absolute -top-1 -right-1 bg-red-500  rounded-full flex items-center justify-center hover:bg-red-600 transition-colors cursor-pointer',
+      'absolute -top-1 -right-1 bg-danger  rounded-full flex items-center justify-center hover:bg-danger transition-colors cursor-pointer',
     inline:
-      'bg-red-500  rounded-full flex items-center justify-center hover:bg-red-600 transition-colors',
+      'bg-danger  rounded-full flex items-center justify-center hover:bg-danger transition-colors',
     ghost:
       'text-muted-foreground hover:text-muted-foreground transition-colors',
   };

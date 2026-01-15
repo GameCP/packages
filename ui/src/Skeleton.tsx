@@ -806,7 +806,7 @@ export function SkeletonGamesTable({
     <div
       className={`overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg ${className}`}
     >
-      <table className="min-w-full divide-y divide-gray-300">
+      <table className="min-w-full divide-y divide-border">
         {/* Table Header */}
         <thead className="bg-muted">
           <tr>

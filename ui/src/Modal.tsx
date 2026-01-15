@@ -241,11 +241,11 @@ export default function Modal({
         <motion.div
           key="modal-backdrop"
           className={`modal-backdrop fixed inset-0 w-screen h-screen flex items-center ${customStyles.backdrop?.includes('justify-')
-              ? customStyles.backdrop
-              : customStyles.backdrop
-                ? `${customStyles.backdrop} justify-center`
-                : 'justify-center bg-black/10'
-            } z-[999999] m-0 ${fullScreen ? 'p-0' : 'p-4'}`}
+            ? customStyles.backdrop
+            : customStyles.backdrop
+              ? `${customStyles.backdrop} justify-center`
+              : 'justify-center bg-black/10'
+            } z-50 m-0 ${fullScreen ? 'p-0' : 'p-4'}`}
           variants={backdropVariants}
           initial="hidden"
           animate={isOpen ? 'visible' : 'hidden'}
@@ -260,7 +260,7 @@ export default function Modal({
             aria-labelledby={title ? 'modal-title-plain' : undefined}
             aria-describedby={ariaDescribedBy || 'modal-content-plain'}
             tabIndex={-1}
-            className={`w-full flex flex-col overflow-hidden relative z-[1000000] ${customStyles.container || 'bg-card shadow-xl'
+            className={`w-full flex flex-col overflow-hidden relative ${customStyles.container || 'bg-card shadow-xl'
               } ${fullScreen
                 ? 'h-full rounded-none'
                 : `rounded-lg ${className} ${sizeClasses[size]} max-h-[90vh]`
@@ -291,7 +291,7 @@ export default function Modal({
       <motion.div
         key="modal-backdrop"
         className={`modal-backdrop fixed inset-0 w-screen h-screen bg-black/10 flex items-center ${customStyles.backdrop || 'justify-center'
-          } z-[999999] m-0 ${fullScreen ? 'p-0' : 'p-4'}`}
+          } z-50 m-0 ${fullScreen ? 'p-0' : 'p-4'}`}
         variants={backdropVariants}
         initial="hidden"
         animate={isOpen ? 'visible' : 'hidden'}
@@ -306,9 +306,9 @@ export default function Modal({
           aria-labelledby={title ? 'modal-title' : undefined}
           aria-describedby={ariaDescribedBy || 'modal-content'}
           tabIndex={-1}
-          className={`bg-card border border-border shadow-xl w-full flex flex-col overflow-hidden relative z-[1000000] ${fullScreen
-              ? 'h-full rounded-none'
-              : `rounded-lg ${customStyles.container || className || sizeClasses[size]} max-h-[90vh]`
+          className={`bg-card border border-border shadow-xl w-full flex flex-col overflow-hidden relative ${fullScreen
+            ? 'h-full rounded-none'
+            : `rounded-lg ${customStyles.container || className || sizeClasses[size]} max-h-[90vh]`
             }`}
           variants={modalVariants}
           initial="hidden"

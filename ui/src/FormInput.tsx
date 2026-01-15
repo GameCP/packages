@@ -244,7 +244,7 @@ export default function FormInput({
         <div className="space-y-2">
           <label className="form-label">
             {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
+            {required && <span className="text-danger ml-1">*</span>}
           </label>
           {description && (
             <p className="text-sm text-secondary-foreground">{description}</p>
@@ -270,7 +270,7 @@ export default function FormInput({
         <div className="space-y-2">
           <label className="form-label">
             {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
+            {required && <span className="text-danger ml-1">*</span>}
           </label>
           {description && (
             <p className="text-sm text-secondary-foreground">{description}</p>
@@ -290,7 +290,7 @@ export default function FormInput({
       <div>
         <label className="form-label">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="text-danger ml-1">*</span>}
         </label>
         {description && (
           <p className="text-sm text-secondary-foreground">{description}</p>
@@ -626,7 +626,7 @@ export default function FormInput({
                   title={copied ? 'Copied!' : `Copy ${label}`}
                 >
                   {copied ? (
-                    <RiCheckLine className="w-4 h-4 text-green-500" aria-hidden="true" />
+                    <RiCheckLine className="w-4 h-4 text-success" aria-hidden="true" />
                   ) : (
                     <RiFileCopyLine className="w-4 h-4" aria-hidden="true" />
                   )}
@@ -707,7 +707,7 @@ export default function FormInput({
                   title={copied ? 'Copied!' : `Copy ${label}`}
                 >
                   {copied ? (
-                    <RiCheckLine className="w-4 h-4 text-green-500" aria-hidden="true" />
+                    <RiCheckLine className="w-4 h-4 text-success" aria-hidden="true" />
                   ) : (
                     <RiFileCopyLine className="w-4 h-4" aria-hidden="true" />
                   )}

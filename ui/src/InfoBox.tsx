@@ -9,16 +9,16 @@ interface InfoBoxProps {
 
 const variantStyles = {
     default: 'bg-accent border-border text-muted-foreground',
-    warning: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 text-yellow-700 dark:text-yellow-300',
-    info: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300',
-    success: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300',
+    warning: 'bg-amber/10 border-amber text-amber',
+    info: 'bg-info/10 border-info text-info',
+    success: 'bg-success/10 border-success text-success',
 };
 
 const titleStyles = {
     default: 'text-foreground',
-    warning: 'text-yellow-800 dark:text-yellow-200',
-    info: 'text-blue-800 dark:text-blue-200',
-    success: 'text-green-800 dark:text-green-200',
+    warning: 'text-amber',
+    info: 'text-info',
+    success: 'text-success',
 };
 
 export default function InfoBox({

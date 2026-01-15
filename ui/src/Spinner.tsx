@@ -2,7 +2,7 @@ import React from 'react';
 
 interface SpinnerProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
-  color?: 'primary' | 'blue' | 'white' | 'current';
+  color?: 'primary' | 'info' | 'white' | 'current';
   className?: string;
 }
 
@@ -20,7 +20,7 @@ const Spinner: React.FC<SpinnerProps> = ({
 
   const colorClasses = {
     primary: 'border-primary-600',
-    blue: 'border-ring',
+    info: 'border-info',
     white: 'border-white',
     current: 'border-current',
   };

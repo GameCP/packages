@@ -158,56 +158,56 @@ export default function ActionButton({
           icon: fill ? RiPlayCircleFill : RiPlayCircleLine,
           label: t.activate,
           className:
-            'bg-emerald-50  text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 border border-emerald-200 transition-all duration-300 ease-in-out',
+            'bg-emerald/10  text-emerald hover:bg-emerald/20 hover:text-emerald-700 border border-emerald-200 transition-all duration-300 ease-in-out',
         };
       case 'view':
         return {
           icon: fill ? RiEyeFill : RiEyeLine,
           label: t.view,
           className:
-            'bg-muted  text-muted-foreground hover:bg-gray-100 hover:text-foreground border border-border transition-all duration-300 ease-in-out',
+            'bg-muted  text-muted-foreground hover:bg-muted hover:text-foreground border border-border transition-all duration-300 ease-in-out',
         };
       case 'metrics':
         return {
           icon: fill ? RiBarChartFill : RiBarChartLine,
           label: t.metrics,
           className:
-            'bg-purple-50  text-purple-600 hover:bg-purple-100 hover:text-purple-700 border border-purple-200 transition-all duration-300 ease-in-out',
+            'bg-purple/10  text-purple-600 hover:bg-purple-100 hover:text-purple-700 border border-purple-200 transition-all duration-300 ease-in-out',
         };
       case 'start':
         return {
           icon: fill ? RiPlayFill : RiPlayLine,
           label: t.start,
           className:
-            'bg-green-50  text-green-600 hover:bg-green-100 hover:text-green-700 border border-green-200 transition-all duration-300 ease-in-out',
+            'bg-success/10 text-success hover:bg-success/20 hover:text-success border border-success transition-all duration-300 ease-in-out',
         };
       case 'stop':
         return {
           icon: fill ? RiStopFill : RiStopLine,
           label: t.stop,
           className:
-            'bg-red-50  text-red-600 hover:bg-red-100 hover:text-red-700 border border-red-200 transition-all duration-300 ease-in-out',
+            'bg-danger/10 text-danger hover:bg-danger/20 hover:text-danger border border-danger transition-all duration-300 ease-in-out',
         };
       case 'restart':
         return {
           icon: fill ? RiRestartFill : RiRestartLine,
           label: t.restart,
           className:
-            'bg-orange-50  text-orange-600 hover:bg-orange-100 hover:text-orange-700 border border-orange-200 transition-all duration-300 ease-in-out',
+            'bg-orange/10  text-orange hover:bg-orange/20 hover:text-orange-700 border border-orange/30 transition-all duration-300 ease-in-out',
         };
       case 'pause':
         return {
           icon: fill ? RiPauseFill : RiPauseLine,
           label: t.pause,
           className:
-            'bg-yellow-50  text-yellow-600 hover:bg-yellow-100 hover:text-yellow-700 border border-yellow-200 transition-all duration-300 ease-in-out',
+            'bg-amber/10 text-amber hover:bg-amber/20 hover:text-amber border border-amber transition-all duration-300 ease-in-out',
         };
       case 'clone':
         return {
           icon: fill ? RiFileCopyFill : RiFileCopyLine,
           label: t.clone,
           className:
-            'bg-indigo-50  text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 border border-indigo-200 transition-all duration-300 ease-in-out',
+            'bg-indigo/10  text-indigo hover:bg-indigo/20 hover:text-indigo-700 border border-indigo-200 transition-all duration-300 ease-in-out',
         };
       default:
         return null;
@@ -220,12 +220,12 @@ export default function ActionButton({
     secondary: 'btn-secondary',
     danger: 'btn-danger',
     success:
-      'bg-green-50  text-green-600 hover:bg-green-100 hover:text-green-700 border border-green-200 transition-all duration-300 ease-in-out',
+      'bg-success/10 text-success hover:bg-success/20 hover:text-success border border-success transition-all duration-300 ease-in-out',
     warning:
-      'bg-yellow-50  text-yellow-600 hover:bg-yellow-100 hover:text-yellow-700 border border-yellow-200 transition-all duration-300 ease-in-out',
+      'bg-amber/10 text-amber hover:bg-amber/20 hover:text-amber border border-amber transition-all duration-300 ease-in-out',
     info: 'bg-muted  text-muted-foreground hover:bg-primary hover:text-primary-foreground border border-ring transition-all duration-300 ease-in-out',
     metrics:
-      'bg-purple-50  text-purple-600 hover:bg-purple-100 hover:text-purple-700 border border-purple-200 transition-all duration-300 ease-in-out',
+      'bg-purple/10  text-purple-600 hover:bg-purple-100 hover:text-purple-700 border border-purple-200 transition-all duration-300 ease-in-out',
   };
 
   let variantClass = variantConfig

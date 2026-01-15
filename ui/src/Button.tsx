@@ -18,7 +18,7 @@ const variantClasses: Record<ButtonVariant, string> = {
     primary: 'bg-primary text-primary-foreground hover:bg-primary/90 border-transparent',
     secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 border-transparent',
     destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90 border-transparent',
-    danger: 'bg-red-600 text-white hover:bg-red-700 border-transparent',
+    danger: 'bg-danger text-white hover:bg-danger border-transparent',
     ghost: 'bg-transparent hover:bg-muted hover:text-foreground border-transparent',
     link: 'bg-transparent text-primary underline-offset-4 hover:underline border-transparent p-0',
     outline: 'bg-transparent border-border hover:bg-muted hover:text-foreground',

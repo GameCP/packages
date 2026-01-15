@@ -262,8 +262,8 @@ export function StatusBadge({
   const variantClasses = {
     default: 'bg-muted text-muted-foreground',
     success: 'bg-success text-success-dark',
-    warning: 'bg-yellow-100 text-yellow-800',
-    error: 'bg-red-100 text-red-800',
+    warning: 'bg-amber/20 text-yellow-800',
+    error: 'bg-danger/20 text-danger',
     info: 'bg-primary-100 text-primary-800',
   };
 

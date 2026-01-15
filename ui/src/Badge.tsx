@@ -14,7 +14,7 @@ export type BadgeVariant =
   | 'purple'
   | 'pink'
   | 'indigo'
-  | 'yellow'
+  | 'amber'
   | 'orange'
   | 'teal'
   | 'cyan'
@@ -42,28 +42,27 @@ interface BadgeProps {
 }
 
 const badgeVariants: Record<Exclude<BadgeVariant, 'custom'>, string> = {
-  default: 'bg-gray-100 text-foreground border-border',
+  default: 'bg-muted text-foreground border-border',
   primary: 'bg-primary-100 text-primary-800 border-primary-200',
-  secondary: 'bg-gray-100 text-foreground border-border',
+  secondary: 'bg-muted text-foreground border-border',
   success: 'bg-success text-success-dark border-success-light',
-  warning: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  error: 'bg-red-100 text-red-800 border-red-200',
+  warning: 'bg-amber/20 text-yellow-800 border-amber/30',
+  error: 'bg-danger/20 text-danger border-danger/30',
   info: 'bg-muted text-muted-foreground border-ring',
-  gray: 'bg-gray-100 text-foreground border-border',
+  gray: 'bg-muted text-foreground border-border',
   purple: 'bg-purple-100 text-purple-800 border-purple-200',
-  pink: 'bg-pink-100 text-pink-800 border-pink-200',
-  indigo: 'bg-indigo-100 text-indigo-800 border-indigo-200',
-  yellow: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  orange: 'bg-orange-100 text-orange-800 border-orange-200',
+  pink: 'bg-pink/20 text-pink border-pink-200',
+  indigo: 'bg-indigo/20 text-indigo border-indigo-200',
+  orange: 'bg-orange/20 text-orange-800 border-orange/30',
   teal: 'bg-teal-100 text-teal-800 border-teal-200',
-  cyan: 'bg-cyan-100 text-cyan-800 border-cyan-200',
+  cyan: 'bg-cyan/20 text-cyan-800 border-cyan-200',
   lime: 'bg-lime-100 text-lime-800 border-lime-200',
-  emerald: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+  emerald: 'bg-emerald/20 text-emerald-800 border-emerald-200',
   rose: 'bg-rose-100 text-rose-800 border-rose-200',
   sky: 'bg-sky-100 text-sky-800 border-sky-200',
   violet: 'bg-violet-100 text-violet-800 border-violet-200',
   fuchsia: 'bg-fuchsia-100 text-fuchsia-800 border-fuchsia-200',
-  amber: 'bg-amber-100 text-amber-800 border-amber-200',
+  amber: 'bg-amber/20 text-amber-800 border-amber/30',
 };
 
 const badgeSizes: Record<BadgeSize, string> = {

@@ -22,9 +22,9 @@ export default function CountBadge({
   const variantClasses = {
     primary: 'bg-ring ',
     secondary: 'bg-muted0 ',
-    success: 'bg-green-500 ',
-    warning: 'bg-yellow-500 ',
-    error: 'bg-red-500 ',
+    success: 'bg-success ',
+    warning: 'bg-amber ',
+    error: 'bg-danger ',
   };
 
   if (count <= 0) return null;
