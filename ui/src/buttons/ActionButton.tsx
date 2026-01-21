@@ -147,28 +147,28 @@ export default function ActionButton({
           icon: fill ? RiStopCircleFill : RiStopCircleLine,
           label: 'Deactivate',
           className:
-            'bg-slate-50  text-slate-600 hover:bg-slate-100 hover:text-slate-700 border border-slate-200 transition-all duration-300 ease-in-out',
+            'bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-slate-700 border border-slate-200 transition-all duration-300 ease-in-out',
         };
       case 'activate':
         return {
           icon: fill ? RiPlayCircleFill : RiPlayCircleLine,
           label: 'Activate',
           className:
-            'bg-emerald/10  text-emerald hover:bg-emerald/20 hover:text-emerald-700 border border-emerald-200 transition-all duration-300 ease-in-out',
+            'bg-emerald/10 text-emerald hover:bg-emerald/20 hover:text-emerald-700 border border-emerald-200 transition-all duration-300 ease-in-out',
         };
       case 'view':
         return {
           icon: fill ? RiEyeFill : RiEyeLine,
           label: 'View',
           className:
-            'bg-muted  text-muted-foreground hover:bg-muted hover:text-foreground border border-border transition-all duration-300 ease-in-out',
+            'bg-muted text-muted-foreground hover:bg-muted hover:text-foreground border border-border transition-all duration-300 ease-in-out',
         };
       case 'metrics':
         return {
           icon: fill ? RiBarChartFill : RiBarChartLine,
           label: 'Metrics',
           className:
-            'bg-purple/10  text-purple-600 hover:bg-purple-100 hover:text-purple-700 border border-purple-200 transition-all duration-300 ease-in-out',
+            'bg-purple/10 text-purple hover:bg-purple-100 hover:text-purple-700 border border-purple-200 transition-all duration-300 ease-in-out',
         };
       case 'start':
         return {
@@ -189,7 +189,7 @@ export default function ActionButton({
           icon: fill ? RiRestartFill : RiRestartLine,
           label: 'Restart',
           className:
-            'bg-orange/10  text-orange hover:bg-orange/20 hover:text-orange-700 border border-orange/30 transition-all duration-300 ease-in-out',
+            'bg-orange/10 text-orange hover:bg-orange/20 hover:text-orange-700 border border-orange/30 transition-all duration-300 ease-in-out',
         };
       case 'pause':
         return {
@@ -203,7 +203,7 @@ export default function ActionButton({
           icon: fill ? RiFileCopyFill : RiFileCopyLine,
           label: 'Clone',
           className:
-            'bg-indigo/10  text-indigo hover:bg-indigo/20 hover:text-indigo-700 border border-indigo-200 transition-all duration-300 ease-in-out',
+            'bg-indigo/10 text-indigo hover:bg-indigo/20 hover:text-indigo-700 border border-indigo-200 transition-all duration-300 ease-in-out',
         };
       default:
         return null;
@@ -219,9 +219,9 @@ export default function ActionButton({
       'bg-success/10 text-success hover:bg-success/20 hover:text-success border border-success transition-all duration-300 ease-in-out',
     warning:
       'bg-amber/10 text-amber hover:bg-amber/20 hover:text-amber border border-amber transition-all duration-300 ease-in-out',
-    info: 'bg-muted  text-muted-foreground hover:bg-primary hover:text-primary-foreground border border-ring transition-all duration-300 ease-in-out',
+    info: 'bg-muted text-muted-foreground hover:bg-primary hover:text-primary-foreground border border-ring transition-all duration-300 ease-in-out',
     metrics:
-      'bg-purple/10  text-purple-600 hover:bg-purple-100 hover:text-purple-700 border border-purple-200 transition-all duration-300 ease-in-out',
+      'bg-purple/10 text-purple hover:bg-purple/20 hover:text-purple-700 border border-purple-200 transition-all duration-300 ease-in-out',
   };
 
   let variantClass = variantConfig

@@ -828,7 +828,7 @@ export function SkeletonGamesTable({
             <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Created
             </th>
-            <th className="px-2 py-1 rounded-md bg-muted backdrop-blur-sm text-center text-xs font-medium text-muted-foreground uppercase tracking-wider sticky right-0">
+            <th className="px-2 py-1 rounded-md backdrop-blur-sm text-center text-xs font-medium text-muted-foreground uppercase tracking-wider sticky right-0">
               Actions
             </th>
           </tr>
@@ -837,7 +837,7 @@ export function SkeletonGamesTable({
         {/* Table Body */}
         <tbody className="table-body-card">
           {Array.from({ length: items }).map((_, i) => (
-            <tr key={i} className="hover:bg-muted">
+            <tr key={i} className="hover:bg-muted hover:text-muted-foreground">
               {/* Game Column */}
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">

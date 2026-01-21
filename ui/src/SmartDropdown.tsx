@@ -717,7 +717,7 @@ export function SmartSelect({
                 className={`w-full px-3 py-2 text-left text-sm hover:bg-accent flex items-center justify-between min-h-[40px] transition-colors ${selectedValues.includes(option.value)
                   ? 'bg-accent border-l-2 border-l-ring'
                   : index === focusedIndex
-                    ? 'bg-muted ring-2 ring-ring'
+                    ? 'bg-muted text-muted-foreground ring-2 ring-ring'
                     : ''
                   }`}
               >

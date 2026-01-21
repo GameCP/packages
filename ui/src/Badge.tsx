@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 
 export type BadgeVariant =
@@ -16,6 +14,7 @@ export type BadgeVariant =
   | 'indigo'
   | 'amber'
   | 'orange'
+  | 'yellow'
   | 'teal'
   | 'cyan'
   | 'lime'
@@ -24,7 +23,6 @@ export type BadgeVariant =
   | 'sky'
   | 'violet'
   | 'fuchsia'
-  | 'amber'
   | 'custom';
 
 export type BadgeSize = 'sm' | 'md' | 'lg';
@@ -41,28 +39,30 @@ interface BadgeProps {
   };
 }
 
+// Badge variant styles using semantic color classes where applicable
 const badgeVariants: Record<Exclude<BadgeVariant, 'custom'>, string> = {
-  default: 'bg-muted text-foreground border-border',
-  primary: 'bg-primary-100 text-primary-800 border-primary-200',
-  secondary: 'bg-muted text-foreground border-border',
-  success: 'bg-success text-success-dark border-success-light',
-  warning: 'bg-amber/20 text-yellow-800 border-amber/30',
-  error: 'bg-danger/20 text-danger border-danger/30',
+  default: 'bg-secondary text-secondary-foreground border-transparent hover:bg-secondary/80',
+  primary: 'bg-primary text-primary-foreground border-transparent hover:bg-primary/80',
+  secondary: 'bg-secondary text-secondary-foreground border-transparent hover:bg-secondary/80',
+  success: 'status-running-badge border-transparent',
+  warning: 'status-starting-badge border-transparent',
+  error: 'status-error-badge border-transparent',
   info: 'bg-muted text-muted-foreground border-ring',
-  gray: 'bg-muted text-foreground border-border',
-  purple: 'bg-purple-100 text-purple-800 border-purple-200',
-  pink: 'bg-pink/20 text-pink border-pink-200',
-  indigo: 'bg-indigo/20 text-indigo border-indigo-200',
-  orange: 'bg-orange/20 text-orange-800 border-orange/30',
-  teal: 'bg-teal-100 text-teal-800 border-teal-200',
-  cyan: 'bg-cyan/20 text-cyan-800 border-cyan-200',
-  lime: 'bg-lime-100 text-lime-800 border-lime-200',
-  emerald: 'bg-emerald/20 text-emerald-800 border-emerald-200',
-  rose: 'bg-rose-100 text-rose-800 border-rose-200',
-  sky: 'bg-sky-100 text-sky-800 border-sky-200',
-  violet: 'bg-violet-100 text-violet-800 border-violet-200',
-  fuchsia: 'bg-fuchsia-100 text-fuchsia-800 border-fuchsia-200',
-  amber: 'bg-amber/20 text-amber-800 border-amber/30',
+  gray: 'bg-muted text-muted-foreground border-border',
+  purple: 'badge-purple',
+  pink: 'badge-pink',
+  indigo: 'badge-indigo',
+  yellow: 'status-starting-badge border-transparent',
+  orange: 'status-restarting-badge border-transparent',
+  teal: 'badge-teal',
+  cyan: 'badge-cyan',
+  lime: 'badge-lime',
+  emerald: 'badge-emerald',
+  rose: 'badge-rose',
+  sky: 'badge-sky',
+  violet: 'badge-violet',
+  fuchsia: 'badge-fuchsia',
+  amber: 'status-starting-badge border-transparent',
 };
 
 const badgeSizes: Record<BadgeSize, string> = {

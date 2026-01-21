@@ -2,8 +2,8 @@
 
 import React, { ButtonHTMLAttributes, forwardRef } from 'react';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'destructive' | 'danger' | 'ghost' | 'link' | 'outline';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'ghost' | 'link';
+export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
@@ -14,20 +14,22 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     fullWidth?: boolean;
 }
 
+// Use the global btn-* classes from the app's CSS
 const variantClasses: Record<ButtonVariant, string> = {
-    primary: 'bg-primary text-primary-foreground hover:bg-primary/90 border-transparent',
-    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 border-transparent',
-    destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90 border-transparent',
-    danger: 'bg-danger text-white hover:bg-danger border-transparent',
+    primary: 'btn-primary',
+    secondary: 'btn-secondary',
+    danger: 'btn-danger',
+    success: 'action-btn-start',
+    warning: 'action-btn-pause',
     ghost: 'bg-transparent hover:bg-muted hover:text-foreground border-transparent',
     link: 'bg-transparent text-primary underline-offset-4 hover:underline border-transparent p-0',
-    outline: 'bg-transparent border-border hover:bg-muted hover:text-foreground',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base',
+    xs: 'btn-xs px-2 py-1',
+    sm: 'btn-sm px-3 py-1.5',
+    md: 'btn-md px-4 py-2',
+    lg: 'btn-lg px-6 py-3',
 };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -47,7 +49,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref
     ) => {
         const baseClasses =
-            'inline-flex items-center justify-center gap-2 font-medium rounded-md border transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+            'btn inline-flex items-center justify-center gap-2 font-medium rounded-md border transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
 
         const classes = [
             baseClasses,

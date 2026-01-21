@@ -10,8 +10,8 @@ export interface ContainerProps {
 const paddingClasses = {
     none: '',
     sm: 'p-4',
-    md: 'p-6',
-    lg: 'p-8',
+    md: 'p-4 lg:p-6',
+    lg: 'p-4 lg:p-8',
 };
 
 export default function Container({
