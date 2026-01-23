@@ -173,7 +173,7 @@ export default function Modal({
       }
       document.removeEventListener('keydown', handleTab);
       document.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
 
       // Restore focus to previously active element only on close
       if (!isOpen && previousActiveElementRef.current) {

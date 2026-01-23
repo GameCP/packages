@@ -91,7 +91,7 @@ export function DataTableRow({
   onClick,
   hover = true,
 }: DataTableRowProps) {
-  const baseClasses = 'hover:bg-muted transition-colors duration-150';
+  const baseClasses = 'hover:bg-muted/50 transition-colors duration-150';
   const clickableClasses = onClick ? 'cursor-pointer' : '';
   const hoverClasses = hover ? baseClasses : '';
 
@@ -282,7 +282,7 @@ export function DataTableActions({
 }) {
   const baseClasses = 'flex items-center justify-end space-x-2 dt-actions';
   const enhancedClasses = enhanced
-    ? 'px-2 py-1 rounded-md bg-card backdrop-blur-sm'
+    ? 'px-2 py-1'
     : '';
 
   return (

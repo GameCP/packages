@@ -1,24 +1,20 @@
 import React from 'react';
+import Card from './Card';
 
 interface InfoBoxProps {
     title: string;
     children: React.ReactNode;
-    variant?: 'default' | 'warning' | 'info' | 'success';
+    variant?: 'default' | 'warning' | 'info' | 'success' | 'danger';
     className?: string;
 }
 
-const variantStyles = {
-    default: 'bg-accent border-border text-muted-foreground',
-    warning: 'bg-amber/10 border-amber text-amber',
-    info: 'bg-info/10 border-info text-info',
-    success: 'bg-success/10 border-success text-success',
-};
-
-const titleStyles = {
-    default: 'text-foreground',
-    warning: 'text-amber',
-    info: 'text-info',
-    success: 'text-success',
+// Map InfoBox variants to Card borderAccent and title colors
+const variantConfig: Record<string, { borderAccent: 'none' | 'success' | 'info' | 'danger' | 'amber' | 'purple' | 'orange' | 'gray', titleColor: string }> = {
+    default: { borderAccent: 'gray', titleColor: 'text-foreground' },
+    warning: { borderAccent: 'amber', titleColor: 'text-amber' },
+    info: { borderAccent: 'info', titleColor: 'text-info' },
+    success: { borderAccent: 'success', titleColor: 'text-success' },
+    danger: { borderAccent: 'danger', titleColor: 'text-danger' },
 };
 
 export default function InfoBox({
@@ -27,14 +23,21 @@ export default function InfoBox({
     variant = 'default',
     className = ''
 }: InfoBoxProps) {
+    const config = variantConfig[variant] || variantConfig.default;
+
     return (
-        <div className={`border rounded-md p-4 ${variantStyles[variant]} ${className}`}>
-            <h4 className={`font-medium mb-2 ${titleStyles[variant]}`}>
+        <Card
+            borderAccent={config.borderAccent}
+            padding="md"
+            className={className}
+        >
+            <h4 className={`font-medium mb-2 ${config.titleColor}`}>
                 {title}
             </h4>
-            <div className="text-sm space-y-1 [&>ul]:list-disc [&>ul]:list-outside [&>ul]:pl-3 [&>ol]:list-decimal [&>ol]:list-outside [&>ol]:pl-4">
+            <div className="text-sm text-muted-foreground space-y-1 [&>ul]:list-disc [&>ul]:list-outside [&>ul]:pl-3 [&>ol]:list-decimal [&>ol]:list-outside [&>ol]:pl-4">
                 {children}
             </div>
-        </div>
+        </Card>
     );
 }
+
