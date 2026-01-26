@@ -837,7 +837,7 @@ export function SkeletonGamesTable({
         {/* Table Body */}
         <tbody className="table-body-card">
           {Array.from({ length: items }).map((_, i) => (
-            <tr key={i} className="hover:bg-muted hover:text-muted-foreground">
+            <tr key={i} className="hover:bg-muted/50">
               {/* Game Column */}
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">

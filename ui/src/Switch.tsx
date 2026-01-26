@@ -13,6 +13,7 @@ interface SwitchProps {
     className?: string;
     size?: 'sm' | 'md' | 'lg';
     variant?: SwitchVariant;
+    labelPosition?: 'left' | 'right';
 }
 
 export default function Switch({
@@ -24,6 +25,7 @@ export default function Switch({
     className = '',
     size = 'md',
     variant = 'default',
+    labelPosition = 'right',
 }: SwitchProps) {
     const toggle = () => {
         if (!disabled) {
@@ -40,32 +42,32 @@ export default function Switch({
     const variants = {
         default: {
             checked: 'bg-primary',
-            unchecked: 'bg-muted',
+            unchecked: 'bg-input',
             ring: 'focus:ring-primary',
         },
         success: {
             checked: 'bg-success',
-            unchecked: 'bg-muted',
+            unchecked: 'bg-input',
             ring: 'focus:ring-success',
         },
         danger: {
             checked: 'bg-destructive',
-            unchecked: 'bg-muted',
+            unchecked: 'bg-input',
             ring: 'focus:ring-destructive',
         },
         warning: {
             checked: 'bg-warning',
-            unchecked: 'bg-muted',
+            unchecked: 'bg-input',
             ring: 'focus:ring-warning',
         },
         info: {
             checked: 'bg-info',
-            unchecked: 'bg-muted',
+            unchecked: 'bg-input',
             ring: 'focus:ring-info',
         },
         embedded: {
             checked: 'bg-success',
-            unchecked: 'bg-gray-300 dark:bg-gray-600',
+            unchecked: 'bg-input',
             ring: 'focus:ring-success',
         },
     };
@@ -73,8 +75,23 @@ export default function Switch({
     const currentSize = sizes[size];
     const currentVariant = variants[variant];
 
+    const LabelContent = (
+        <div className={`${labelPosition === 'left' ? 'mr-3 flex-1 text-left' : 'ml-3 w-fit'} flex flex-col justify-center gap-1`}>
+            {label && (
+                <label className="text-sm font-medium text-foreground cursor-pointer" onClick={toggle}>
+                    {label}
+                </label>
+            )}
+            {description && (
+                <p className="text-xs text-muted-foreground leading-snug">{description}</p>
+            )}
+        </div>
+    );
+
     return (
-        <div className={`flex items-start ${className}`}>
+        <div className={`flex items-center ${labelPosition === 'left' ? 'justify-between' : ''} ${className}`}>
+            {labelPosition === 'left' && (label || description) && LabelContent}
+
             <button
                 type="button"
                 role="switch"
@@ -99,18 +116,8 @@ export default function Switch({
           `}
                 />
             </button>
-            {(label || description) && (
-                <div className="ml-3 text-sm leading-6">
-                    {label && (
-                        <label className="font-medium text-foreground cursor-pointer" onClick={toggle}>
-                            {label}
-                        </label>
-                    )}
-                    {description && (
-                        <p className="text-muted-foreground">{description}</p>
-                    )}
-                </div>
-            )}
+
+            {labelPosition === 'right' && (label || description) && LabelContent}
         </div>
     );
 }

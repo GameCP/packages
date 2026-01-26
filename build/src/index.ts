@@ -108,10 +108,8 @@ export async function buildExtension(
                         if (args.resolveDir?.includes('packages/ui')) {
                             return { path: args.path, external: true };
                         }
-                        // Handle react-icons submodules
-                        if (args.path.startsWith('react-icons/')) {
-                            return { path: args.path, external: true };
-                        }
+                        // react-icons are now bundled into each extension (tree-shaken)
+                        // This way each extension only includes the specific icons it uses
                         // Handle next submodules
                         if (args.path.startsWith('next/')) {
                             return { path: args.path, external: true };
