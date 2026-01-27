@@ -42,7 +42,7 @@ export default function SmartDropdown({
   trigger,
   children,
   className = '',
-  width = 384,
+  width = 300,
   maxHeight = 450,
   offset = 8,
   margin = 16,
@@ -91,7 +91,7 @@ export default function SmartDropdown({
     );
 
     // Determine horizontal position based on position prop
-    let left = triggerRect.left;
+    let left: number | undefined = triggerRect.left;
     let right: number | undefined = undefined;
 
     if (position === 'top-right' || position === 'bottom-right') {
@@ -108,7 +108,7 @@ export default function SmartDropdown({
       // Use a percentage of available space for offset (e.g., 20% of available space)
       const dynamicOffset = Math.max(20, availableLeftSpace * 0.2);
       right = viewportWidth - triggerRect.left + dynamicOffset;
-      left = 0; // Set to 0 instead of undefined
+      left = undefined; // Clear left when using right
       // Ensure width is calculated properly for right positioning
       calculatedWidth = Math.min(
         calculatedWidth,
@@ -180,13 +180,13 @@ export default function SmartDropdown({
       finalMaxHeight = Math.min(maxHeight, spaceBelow);
     } else if (position === 'top-left-aligned') {
       right = viewportWidth - triggerRect.right;
-      left = 0;
+      left = undefined;
       top = triggerRect.top - offset;
       isAbove = true;
       finalMaxHeight = Math.min(maxHeight, spaceAbove);
     } else if (position === 'bottom-left-aligned') {
       right = viewportWidth - triggerRect.right;
-      left = 0;
+      left = undefined;
       top = triggerRect.bottom + offset;
       isAbove = false;
       finalMaxHeight = Math.min(maxHeight, spaceBelow);
@@ -323,7 +323,7 @@ export default function SmartDropdown({
               ...(dropdownPosition.right !== undefined
                 ? { right: dropdownPosition.right }
                 : {}),
-              width: width === 'fit-content' ? 'auto' : dropdownPosition.width,
+              width: width ?? dropdownPosition.width,
               maxHeight: dropdownPosition.maxHeight,
             }}
             onClick={e => {
@@ -331,10 +331,7 @@ export default function SmartDropdown({
               e.stopPropagation();
             }}
           >
-            <div
-              className={className ? className : 'overflow-y-auto'}
-              style={{ maxHeight: dropdownPosition.maxHeight }}
-            >
+            <div className={className ? className : 'overflow-y-auto h-full'}>
               {typeof children === 'function'
                 ? children({ isAbove: dropdownPosition.isAbove })
                 : children}
@@ -350,11 +347,12 @@ export default function SmartDropdown({
 interface Option {
   value: string;
   label: string;
-  description?: string;
+  description?: React.ReactNode;
   icon?: React.ReactNode;
   metadata?: {
     isDefault?: boolean;
     args?: string[];
+    commandType?: 'command' | 'bash' | 'sh' | 'powershell';
   };
 }
 
@@ -364,13 +362,16 @@ interface SmartSelectProps {
   onChange: (value: string | string[]) => void;
   placeholder?: string;
   className?: string;
-  description?: string;
+  description?: React.ReactNode;
   disabled?: boolean;
   multiple?: boolean;
-  width?: number;
+  width?: number | 'auto' | 'fit-content';
   searchable?: boolean;
   keepOpen?: boolean;
   clearable?: boolean;
+  variant?: 'default' | 'compact'; // Add variant prop
+  // Custom render function for selected option
+  renderSelected?: (option: Option) => React.ReactNode;
   // API integration props
   onOpen?: () => void;
   onClose?: () => void;
@@ -392,6 +393,8 @@ export function SmartSelect({
   searchable = false,
   keepOpen = false,
   clearable = true,
+  variant = 'default',
+  renderSelected,
   // API integration props
   onOpen,
   onClose,
@@ -427,7 +430,10 @@ export function SmartSelect({
         option =>
           option.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
           option.value.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          option.description?.toLowerCase().includes(searchTerm.toLowerCase())
+          (typeof option.description === 'string' &&
+            option.description
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()))
       )
       : options;
 
@@ -565,10 +571,10 @@ export function SmartSelect({
                 aria-activedescendant={
                   focusedIndex >= 0 ? `option-${focusedIndex}` : undefined
                 }
-                className={`form-input truncate ${hasSelection ? 'pr-12' : 'pr-8'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+                className={`form-input truncate ${hasSelection ? 'pr-12' : 'pr-8'} ${disabled ? 'cursor-not-allowed' : ''} ${className}`}
               />
               {/* Clear button - only show when there are selected values and clearable is true */}
-              {hasSelection && clearable && (
+              {hasSelection && clearable && !disabled && (
                 <button
                   type="button"
                   onClick={e => {
@@ -621,7 +627,7 @@ export function SmartSelect({
                 aria-activedescendant={
                   focusedIndex >= 0 ? `option-${focusedIndex}` : undefined
                 }
-                className={`form-input flex items-center justify-between text-left ${hasSelection ? 'pr-12' : 'pr-8'} ${disabled ? 'opacity-60 cursor-not-allowed' : ''} ${className}`}
+                className={`${variant === 'compact' ? 'bg-background border border-border rounded-lg px-2 py-1 text-xs h-auto min-h-0 hover:bg-muted/50' : 'form-input'} flex items-center justify-between text-left ${hasSelection ? 'pr-12' : 'pr-8'} ${disabled ? 'cursor-not-allowed' : ''} ${className}`}
               >
                 <span
                   className={`flex items-center gap-2 min-w-0 flex-1 ${selectedOptions.length > 0 ? '' : 'text-muted-foreground opacity-60'}`}
@@ -647,23 +653,27 @@ export function SmartSelect({
                       <span className="truncate">{placeholder}</span>
                     )
                   ) : selectedOptions[0] ? (
-                    <span className="flex items-center gap-1 min-w-0 flex-1">
-                      {selectedOptions[0].icon && (
-                        <span className="flex-shrink-0">
-                          {selectedOptions[0].icon}
+                    renderSelected ? (
+                      renderSelected(selectedOptions[0])
+                    ) : (
+                      <span className="flex items-center gap-1 min-w-0 flex-1">
+                        {selectedOptions[0].icon && (
+                          <span className="flex-shrink-0">
+                            {selectedOptions[0].icon}
+                          </span>
+                        )}
+                        <span className="truncate">
+                          {selectedOptions[0].label}
                         </span>
-                      )}
-                      <span className="truncate">
-                        {selectedOptions[0].label}
                       </span>
-                    </span>
+                    )
                   ) : (
                     <span className="truncate">{placeholder}</span>
                   )}
                 </span>
               </button>
               {/* Clear button - only show when there are selected values and clearable is true */}
-              {hasSelection && clearable && (
+              {hasSelection && clearable && !disabled && (
                 <button
                   type="button"
                   onClick={e => {
@@ -714,20 +724,26 @@ export function SmartSelect({
                   e.stopPropagation();
                   handleSelect(option.value);
                 }}
-                className={`w-full px-3 py-2 text-left text-sm hover:bg-accent flex items-center justify-between min-h-[40px] transition-colors ${selectedValues.includes(option.value)
-                  ? 'bg-accent border-l-2 border-l-ring'
+                className={`w-full ${variant === 'compact' ? 'px-2 py-1.5 text-xs' : 'px-3 py-1.5 text-sm'} text-left hover:bg-muted/50 flex items-center justify-between transition-colors ${selectedValues.includes(option.value)
+                  ? 'bg-primary'
                   : index === focusedIndex
-                    ? 'bg-muted text-muted-foreground ring-2 ring-ring'
+                    ? 'bg-muted/50'
                     : ''
                   }`}
               >
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                   {option.icon && (
-                    <span className="flex-shrink-0">{option.icon}</span>
+                    <span
+                      className={`flex-shrink-0 ${selectedValues.includes(option.value) ? 'text-primary-foreground' : ''}`}
+                    >
+                      {option.icon}
+                    </span>
                   )}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <div className="font-medium text-foreground truncate">
+                      <div
+                        className={`font-medium truncate ${selectedValues.includes(option.value) ? 'text-primary-foreground' : 'text-foreground'}`}
+                      >
                         {option.label}
                       </div>
                       {option.metadata?.isDefault && (
@@ -737,14 +753,20 @@ export function SmartSelect({
                       )}
                     </div>
                     {option.description && (
-                      <div className="text-xs text-muted-foreground truncate">
+                      <div
+                        className={`text-xs truncate ${selectedValues.includes(option.value) ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}
+                      >
                         {option.description}
                       </div>
                     )}
                     {option.metadata?.args &&
-                      option.metadata.args.length > 0 && (
+                      option.metadata.args.length > 0 &&
+                      (!option.metadata.commandType ||
+                        option.metadata.commandType === 'command') && (
                         <div className="mt-1">
-                          <div className="text-xs text-secondary-foreground mb-1">
+                          <div
+                            className={`text-xs mb-1 ${selectedValues.includes(option.value) ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}
+                          >
                             Arguments:
                           </div>
                           <div className="flex flex-wrap gap-1">
@@ -759,7 +781,9 @@ export function SmartSelect({
                                 </span>
                               ))}
                             {option.metadata.args.length > 3 && (
-                              <span className="text-xs text-secondary-foreground">
+                              <span
+                                className={`text-xs ${selectedValues.includes(option.value) ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}
+                              >
                                 +{option.metadata.args.length - 3} more
                               </span>
                             )}
@@ -777,13 +801,13 @@ export function SmartSelect({
                   />
                 ) : (
                   selectedValues.includes(option.value) && (
-                    <RiCheckLine className="w-4 h-4 text-primary flex-shrink-0" />
+                    <RiCheckLine className="w-4 h-4 text-primary-foreground flex-shrink-0" />
                   )
                 )}
               </button>
             ))
           ) : (
-            <div className="px-3 py-2 text-sm text-secondary-foreground flex items-center gap-2">
+            <div className="px-3 py-2 text-sm text-muted-foreground flex items-center gap-2">
               {isLoading ? (
                 <>
                   <RiLoader4Line className="w-4 h-4 animate-spin" />
