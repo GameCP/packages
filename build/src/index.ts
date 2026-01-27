@@ -93,6 +93,7 @@ export async function buildExtension(
             'react-tooltip',
             'framer-motion',
             'next',
+            'swr',
             ...uiExternal
         ],
         plugins: [

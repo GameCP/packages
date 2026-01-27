@@ -210,7 +210,7 @@ export default function Card({
     variantClasses[variant],
     paddingClasses[padding],
     borderAccentClasses[borderAccent],
-    overflow !== 'visible' || activeHeaderBorder ? `overflow-${overflow === 'visible' && activeHeaderBorder ? 'hidden' : overflow}` : '',
+    overflow !== 'visible' ? `overflow-${overflow}` : '',
     activeHeaderBorder ? 'relative' : '',
     hover ? 'hover:shadow-md transition-shadow' : '',
     clickable || onClick ? 'cursor-pointer' : '',

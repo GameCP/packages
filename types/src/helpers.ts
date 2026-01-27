@@ -109,6 +109,9 @@ export interface UseGameCPReturn {
   /** Navigation Link component */
   Link: any;
   
+  /** Current pathname for active state detection */
+  pathname: string | null;
+  
   /** Current authenticated user (null if not logged in) */
   user: {
     id: string;
@@ -153,6 +156,9 @@ export function useGameCP(): UseGameCPReturn {
   return {
     // Navigation component from SDK
     Link: sdk.Link,
+    
+    // Routing
+    pathname: sdk.pathname || null,
     
     // Utilities
     locale: sdk.locale || 'en',

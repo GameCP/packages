@@ -17,6 +17,7 @@ export { default as FormSection } from './FormSection';
 export { default as Grid } from './Grid';
 export { default as InfoBox } from './InfoBox';
 export { default as Link } from './Link';
+export * from './SidebarNavItem';
 export { default as LoadingSpinner } from './LoadingSpinner';
 export { default as Modal } from './Modal';
 export { default as PageHeader } from './PageHeader';
