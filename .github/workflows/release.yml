@@ -26,13 +26,23 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 9
+      - name: Install dependencies for types
+        run: cd types && npm install
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Install dependencies for manifest
+        run: cd manifest && npm install
+
+      - name: Install dependencies for cli
+        run: cd cli && npm install
+
+      - name: Install dependencies for build
+        run: cd build && npm install
+
+      - name: Install dependencies for ui
+        run: cd ui && npm install
+
+      - name: Install root dependencies
+        run: npm install
 
       - name: Build packages
         run: npm run build:all
@@ -42,7 +52,7 @@ jobs:
         uses: changesets/action@v1
         with:
           publish: npm run release
-          version: pnpm version
+          version: npx changeset version
           title: "chore: version packages"
           commit: "chore: version packages"
         env:
