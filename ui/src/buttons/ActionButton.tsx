@@ -29,19 +29,28 @@ import {
 } from 'react-icons/ri';
 
 export interface ActionButtonProps {
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: React.ComponentType<{
+    className?: string;
+    size?: number;
+    style?: React.CSSProperties;
+  }>;
   label?: string;
-  onClick?: () => void | Promise<void>;
+  onClick?: () => void | Promise<any>;
   href?: string;
   disabled?: boolean;
   loading?: boolean; // External loading state
-  loadingIcon?: React.ComponentType<{ className?: string }>; // Custom loading icon
+  loadingIcon?: React.ComponentType<{
+    className?: string;
+    size?: number;
+    style?: React.CSSProperties;
+  }>; // Custom loading icon
   disableLoadingSpin?: boolean; // Disable spin animation for custom loading icons
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   iconOnly?: boolean;
   className?: string;
   title?: string;
   tooltipId?: string; // Unique ID for tooltip
+  tooltipContent?: string; // Content for the tooltip (uses data-tooltip-content attribute with shared global tooltip)
   tooltipPlace?: 'top' | 'bottom' | 'left' | 'right';
   tooltipOffset?: number;
   tooltipDelayShow?: number;
@@ -64,7 +73,8 @@ export interface ActionButtonProps {
   | 'stop'
   | 'restart'
   | 'pause'
-  | 'clone';
+  | 'clone'
+  | 'input';
   terminalMode?: boolean; // Special prop for terminal styling
   fill?: boolean; // Use filled icons instead of outlined
   [key: string]: any; // Allow additional props to be passed through
@@ -81,8 +91,9 @@ export default function ActionButton({
   className = '',
   title,
   tooltipId,
+  tooltipContent,
   tooltipPlace = 'bottom',
-  tooltipOffset = 12,
+  tooltipOffset = 6,
   tooltipDelayShow = 200,
   tooltipDelayHide = 100,
   type = 'button',
@@ -114,96 +125,119 @@ export default function ActionButton({
   }, [onClick, disabled, loading]);
 
   const iconSizes = {
+    xs: terminalMode ? 'w-3 h-3' : 'w-3 h-3',
     sm: terminalMode ? 'w-4 h-4' : 'w-4 h-4',
     md: terminalMode ? 'w-4 h-4' : 'w-4 h-4',
     lg: terminalMode ? 'w-5 h-5' : 'w-5 h-5',
   };
 
+  // Numerical sizes for React Icons 'size' prop to ensure they actually scale
+  const iconPixelSizes = {
+    xs: 9, // Truly tiny for xs
+    sm: 16,
+    md: 16,
+    lg: 20,
+  };
+
   // Consistent height classes matching the global button system
   const heightClasses = {
+    xs: terminalMode ? '' : 'btn-xs',
     sm: terminalMode ? '' : 'btn-sm',
     md: terminalMode ? '' : 'btn-md',
     lg: terminalMode ? '' : 'btn-lg',
   };
 
-  const paddingClasses = iconOnly ? (terminalMode ? '' : 'p-2') : 'px-3 py-1.5';
+  // Size-aware padding classes for icon-only buttons
+  const paddingClasses = iconOnly
+    ? terminalMode
+      ? ''
+      : size === 'xs'
+        ? 'p-1.5'
+        : 'p-2'
+    : 'px-3 py-1.5';
+
+  // Static translations
+  const t = {
+    edit: 'Edit',
+    delete: 'Delete',
+    deactivate: 'Deactivate',
+    activate: 'Activate',
+    view: 'View',
+    metrics: 'Metrics',
+    start: 'Start',
+    stop: 'Stop',
+    restart: 'Restart',
+    pause: 'Pause',
+    clone: 'Clone',
+  };
 
   const getVariantConfig = () => {
     switch (variant) {
       case 'edit':
         return {
           icon: fill ? RiEditFill : RiEditLine,
-          label: 'Edit',
-          className: 'btn-secondary',
+          label: t.edit,
+          className: 'action-btn-edit',
         };
       case 'delete':
         return {
           icon: fill ? RiDeleteBinFill : RiDeleteBinLine,
-          label: 'Delete',
-          className: 'btn-danger',
+          label: t.delete,
+          className: 'action-btn-delete',
         };
       case 'deactivate':
         return {
           icon: fill ? RiStopCircleFill : RiStopCircleLine,
-          label: 'Deactivate',
-          className:
-            'bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-slate-700 border border-slate-200 transition-all duration-300 ease-in-out',
+          label: t.deactivate,
+          className: 'action-btn-deactivate',
         };
       case 'activate':
         return {
           icon: fill ? RiPlayCircleFill : RiPlayCircleLine,
-          label: 'Activate',
-          className:
-            'bg-emerald/10 text-emerald hover:bg-emerald/20 hover:text-emerald-700 border border-emerald-200 transition-all duration-300 ease-in-out',
+          label: t.activate,
+          className: 'action-btn-activate',
         };
       case 'view':
         return {
           icon: fill ? RiEyeFill : RiEyeLine,
-          label: 'View',
-          className:
-            'bg-muted text-muted-foreground hover:bg-muted hover:text-foreground border border-border transition-all duration-300 ease-in-out',
+          label: t.view,
+          className: 'action-btn-view',
         };
       case 'metrics':
         return {
           icon: fill ? RiBarChartFill : RiBarChartLine,
-          label: 'Metrics',
-          className:
-            'bg-purple/10 text-purple hover:bg-purple-100 hover:text-purple-700 border border-purple-200 transition-all duration-300 ease-in-out',
+          label: t.metrics,
+          className: 'action-btn-metrics',
         };
       case 'start':
         return {
           icon: fill ? RiPlayFill : RiPlayLine,
-          label: 'Start',
-          className:
-            'bg-success/10 text-success hover:bg-success/20 hover:text-success border border-success transition-all duration-300 ease-in-out',
+          label: t.start,
+          className: 'action-btn-start',
         };
       case 'stop':
         return {
           icon: fill ? RiStopFill : RiStopLine,
-          label: 'Stop',
-          className:
-            'bg-danger/10 text-danger hover:bg-danger/20 hover:text-danger border border-danger transition-all duration-300 ease-in-out',
+          label: t.stop,
+          className: 'action-btn-stop',
         };
       case 'restart':
         return {
           icon: fill ? RiRestartFill : RiRestartLine,
-          label: 'Restart',
-          className:
-            'bg-orange/10 text-orange hover:bg-orange/20 hover:text-orange-700 border border-orange/30 transition-all duration-300 ease-in-out',
+          label: t.restart,
+          className: 'action-btn-restart',
         };
       case 'pause':
         return {
           icon: fill ? RiPauseFill : RiPauseLine,
-          label: 'Pause',
-          className:
-            'bg-amber/10 text-amber hover:bg-amber/20 hover:text-amber border border-amber transition-all duration-300 ease-in-out',
+          label: t.pause,
+          className: 'action-btn-pause',
         };
       case 'clone':
         return {
           icon: fill ? RiFileCopyFill : RiFileCopyLine,
-          label: 'Clone',
-          className:
-            'bg-indigo/10 text-indigo hover:bg-indigo/20 hover:text-indigo-700 border border-indigo-200 transition-all duration-300 ease-in-out',
+          label: t.clone,
+          className: 'action-btn-clone',
         };
       default:
         return null;
@@ -215,13 +249,11 @@ export default function ActionButton({
     primary: 'btn-primary',
     secondary: 'btn-secondary',
     danger: 'btn-danger',
-    success:
-      'bg-success/10 text-success hover:bg-success/20 hover:text-success border border-success transition-all duration-300 ease-in-out',
-    warning:
-      'bg-amber/10 text-amber hover:bg-amber/20 hover:text-amber border border-amber transition-all duration-300 ease-in-out',
-    info: 'bg-muted text-muted-foreground hover:bg-primary hover:text-primary-foreground border border-ring transition-all duration-300 ease-in-out',
-    metrics:
-      'bg-purple/10 text-purple hover:bg-purple/20 hover:text-purple-700 border border-purple-200 transition-all duration-300 ease-in-out',
+    success: 'action-btn-start',
+    warning: 'action-btn-pause',
+    info: 'action-btn-info',
+    metrics: 'action-btn-metrics',
+    input: 'action-btn-input',
   };
 
   let variantClass = variantConfig
@@ -263,18 +295,33 @@ export default function ActionButton({
           )}
         </div>
       ) : (
-        (variantConfig?.icon || IconComponent) && (
+        (IconComponent || variantConfig?.icon) && (
           <div
-            className={`${iconSizes[size]} flex items-center justify-center flex-shrink-0`}
+            className="flex items-center justify-center flex-shrink-0"
+            style={{
+              width: iconPixelSizes[size],
+              height: iconPixelSizes[size],
+            }}
             aria-hidden="true"
           >
-            {variantConfig?.icon ? (
-              <variantConfig.icon
-                className="w-full h-full"
+            {IconComponent ? (
+              <IconComponent
+                size={iconPixelSizes[size]}
+                style={{
+                  width: iconPixelSizes[size],
+                  height: iconPixelSizes[size],
+                }}
                 aria-hidden="true"
               />
-            ) : IconComponent ? (
-              <IconComponent className="w-full h-full" aria-hidden="true" />
+            ) : variantConfig ? (
+              <variantConfig.icon
+                size={iconPixelSizes[size]}
+                style={{
+                  width: iconPixelSizes[size],
+                  height: iconPixelSizes[size],
+                }}
+                aria-hidden="true"
+              />
             ) : null}
           </div>
         )
@@ -299,13 +346,16 @@ export default function ActionButton({
       : accessibleLabel;
 
   // Tooltip content can be ReactNode or string
-  const tooltipContent = title || (iconOnly ? variantConfig?.label || label : undefined);
+  // If tooltipContent is provided, use that; otherwise derive from title/label for backward compat
+  const derivedTooltipContent =
+    tooltipContent || title || (iconOnly ? variantConfig?.label || label : undefined);
 
   const buttonClassName = `
-
     ${terminalMode
       ? 'btn-terminal'
-      : `btn ${variantClass} ${paddingClasses} ${heightClasses[size]}  ${className} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`
+      : variant === 'input'
+        ? `action-btn-input ${paddingClasses} ${className} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`
+        : `btn ${variantClass} ${paddingClasses} ${heightClasses[size]}  ${className} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`
     }`;
 
   // Render as Link if href is provided
@@ -314,12 +364,20 @@ export default function ActionButton({
       <>
         <Link
           href={href}
-          // Only pass title if it's a string, otherwise rely on the tooltip content
-          title={typeof title === 'string' ? title : undefined}
-          aria-label={iconOnly ? typeof buttonAriaLabel === 'string' ? buttonAriaLabel : undefined : undefined}
+          scroll={false}
+          // Only pass title if no tooltipId is provided (to avoid double tooltips)
+          title={!tooltipId && typeof title === 'string' ? title : undefined}
+          aria-label={
+            iconOnly
+              ? typeof buttonAriaLabel === 'string'
+                ? buttonAriaLabel
+                : undefined
+              : undefined
+          }
           onClick={handleClick}
           className={buttonClassName}
-          data-tooltip-id={tooltipId}
+          data-tooltip-id={tooltipId || (tooltipContent ? 'global-tooltip' : undefined)}
+          data-tooltip-content={tooltipContent || undefined}
           aria-busy={loading || externalLoading ? 'true' : undefined}
           {...restProps}
         >
@@ -333,7 +391,7 @@ export default function ActionButton({
             delayShow={tooltipDelayShow}
             delayHide={tooltipDelayHide}
           >
-            {tooltipContent}
+            {derivedTooltipContent}
           </SharedTooltip>
         )}
       </>
@@ -346,11 +404,18 @@ export default function ActionButton({
       <button
         type={type}
         onClick={handleClick}
-        // Only pass title if it's a string, otherwise rely on the tooltip component
-        title={typeof title === 'string' ? title : undefined}
-        aria-label={iconOnly ? typeof buttonAriaLabel === 'string' ? buttonAriaLabel : undefined : undefined}
+        // Only pass title if no tooltipId is provided (to avoid double tooltips)
+        title={!tooltipId && typeof title === 'string' ? title : undefined}
+        aria-label={
+          iconOnly
+            ? typeof buttonAriaLabel === 'string'
+              ? buttonAriaLabel
+              : undefined
+            : undefined
+        }
         className={buttonClassName}
-        data-tooltip-id={tooltipId}
+        data-tooltip-id={tooltipId || (tooltipContent ? 'global-tooltip' : undefined)}
+        data-tooltip-content={tooltipContent || undefined}
         aria-busy={loading || externalLoading ? 'true' : undefined}
         {...restProps}
         disabled={isDisabled}
@@ -365,7 +430,7 @@ export default function ActionButton({
           delayShow={tooltipDelayShow}
           delayHide={tooltipDelayHide}
         >
-          {tooltipContent}
+          {derivedTooltipContent}
         </SharedTooltip>
       )}
     </>

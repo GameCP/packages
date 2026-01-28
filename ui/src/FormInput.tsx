@@ -733,7 +733,7 @@ export default function FormInput({
             </div>
           )}
           {footerDescription && (
-            <p className="text-xs mt-1">{footerDescription}</p>
+            <p className="text-xs text-muted-foreground mt-1">{footerDescription}</p>
           )}
           {error && (
             <div id={`${name}-error`} className="form-error" role="alert">

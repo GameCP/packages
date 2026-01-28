@@ -13,8 +13,8 @@ export type BadgeVariant =
   | 'pink'
   | 'indigo'
   | 'amber'
-  | 'orange'
   | 'yellow'
+  | 'orange'
   | 'teal'
   | 'cyan'
   | 'lime'
@@ -23,6 +23,7 @@ export type BadgeVariant =
   | 'sky'
   | 'violet'
   | 'fuchsia'
+  | 'amber'
   | 'custom';
 
 export type BadgeSize = 'sm' | 'md' | 'lg';
@@ -41,9 +42,12 @@ interface BadgeProps {
 
 // Badge variant styles using semantic color classes where applicable
 const badgeVariants: Record<Exclude<BadgeVariant, 'custom'>, string> = {
-  default: 'bg-secondary text-secondary-foreground border-transparent hover:bg-secondary/80',
-  primary: 'bg-primary text-primary-foreground border-transparent hover:bg-primary/80',
-  secondary: 'bg-secondary text-secondary-foreground border-transparent hover:bg-secondary/80',
+  default:
+    'bg-secondary text-secondary-foreground border-transparent hover:bg-secondary/80',
+  primary:
+    'bg-primary text-primary-foreground border-transparent hover:bg-primary/80',
+  secondary:
+    'bg-secondary text-secondary-foreground border-transparent hover:bg-secondary/80',
   success: 'status-running-badge border-transparent',
   warning: 'status-starting-badge border-transparent',
   error: 'status-error-badge border-transparent',
@@ -88,10 +92,10 @@ export default function Badge({
   const customStyles =
     variant === 'custom' && customColors
       ? {
-        backgroundColor: customColors.background,
-        color: customColors.text,
-        borderColor: customColors.border || customColors.background,
-      }
+          backgroundColor: customColors.background,
+          color: customColors.text,
+          borderColor: customColors.border || customColors.background,
+        }
       : {};
 
   return (

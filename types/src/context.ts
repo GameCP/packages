@@ -56,6 +56,9 @@ export interface ExtensionContext {
   
   /** Redis client (requires node_modules: ["ioredis"]) */
   redis?: RedisClient;
+  
+  /** Crypto utilities for secure password handling */
+  crypto: CryptoClient;
 }
 
 export interface DatabaseClient {
@@ -249,4 +252,22 @@ export interface RedisConfig {
 export interface RedisClient {
   /** Execute a Redis command */
   command(config: RedisConfig, command: string, args?: any[]): Promise<any>;
+}
+
+/**
+ * Crypto Client
+ * Utilities for secure data encryption (two-way, reversible)
+ */
+export interface CryptoClient {
+  /** Encrypt a value (two-way, can be decrypted)
+   * @param value - The plain text value to encrypt
+   * @returns The encrypted value (can be decrypted with decrypt())
+   */
+  encrypt(value: string): Promise<string>;
+  
+  /** Decrypt an encrypted value
+   * @param encryptedValue - The encrypted value to decrypt
+   * @returns The original plain text value
+   */
+  decrypt(encryptedValue: string): Promise<string>;
 }

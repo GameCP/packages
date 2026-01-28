@@ -1,5 +1,3 @@
-'use client';
-
 import { RiArrowDownSLine } from 'react-icons/ri';
 
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2' | '3' | '4' | '5' | '6';
@@ -8,7 +6,14 @@ interface DropDownArrowProps {
   isOpen: boolean;
   disabled?: boolean;
   size?: Size;
-  color?: 'default' | 'gray' | 'primary' | 'secondary';
+  color?:
+    | 'default'
+    | 'gray'
+    | 'primary'
+    | 'secondary'
+    | 'destructive'
+    | 'currentColor'
+    | 'danger';
   className?: string;
   'aria-hidden'?: boolean;
 }
@@ -28,9 +33,12 @@ const sizeClasses: Record<Size, string> = {
 
 const colorClasses = {
   default: 'text-muted-foreground hover:text-muted-foreground',
+  currentColor: 'text-muted-foreground hover:text-muted-foreground',
   gray: 'text-muted-foreground hover:text-muted-foreground',
-  primary: 'text-ring hover:text-primary-foreground',
+  primary: 'text-primary-foreground hover:text-secondary-foreground',
   secondary: 'text-secondary-foreground hover:text-foreground',
+  destructive: 'text-destructive-foreground hover:opacity-70',
+  danger: 'text-danger hover:text-danger',
 };
 
 export function DropDownArrow({
@@ -40,7 +48,7 @@ export function DropDownArrow({
   color = 'default',
   className = '',
   'aria-hidden': ariaHidden,
-}: DropDownArrowProps) {
+}: DropDownArrowProps & { color?: keyof typeof colorClasses }) {
   const baseClasses = `${sizeClasses[size]} flex-shrink-0 transition-transform`;
   const rotationClasses = isOpen ? 'rotate-180' : '';
   const colorClassesApplied = disabled

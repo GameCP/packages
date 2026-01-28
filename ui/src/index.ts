@@ -12,10 +12,11 @@ export { default as Card } from './Card';
 export { default as ConfirmDialog, useConfirmDialog } from './ConfirmDialog';
 export { default as Container } from './Container';
 export { default as EmptyState } from './EmptyState';
-export { default as FormInput } from './FormInput';
+export { default as FormInput } from './forms/FormInput';
 export { default as FormSection } from './FormSection';
 export { default as Grid } from './Grid';
 export { default as InfoBox } from './InfoBox';
+export { default as Notice, InfoNotice, WarningNotice, SuccessNotice, DangerNotice } from './Notice';
 export { default as Link } from './Link';
 export * from './SidebarNavItem';
 export { default as LoadingSpinner } from './LoadingSpinner';
@@ -33,7 +34,20 @@ export { default as ViewToggle } from './ViewToggle';
 export { default as ActionButton } from './buttons/ActionButton';
 export { default as SharedTooltip } from './SharedTooltip';
 export { default as Spinner } from './Spinner';
-export { default as IconButtonWithCount } from './IconButtonWithCount';
+export { default as IconButtonWithCount } from './buttons/IconButtonWithCount';
+
+// Dropdown Components
+export { default as Dropdown } from './dropdowns/Dropdown';
+export { default as DropdownItem } from './dropdowns/DropdownItem';
+export { default as Select } from './dropdowns/presets/Select';
+export { DropDownArrow } from './DropDown';
+
+// Alert Components
+export { default as ErrorMessage, ErrorAlert, SuccessAlert, WarningAlert, InfoAlert, UnsavedAlert } from './alerts/ErrorMessage';
+export { default as UnsavedChangesNotification } from './UnsavedChangesNotification';
+
+// Variable Selector
+export { default as VariableSelector, VariableInput } from './VariableSelector';
 
 // Type exports
 export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
@@ -43,4 +57,5 @@ export type { ConfirmDialogOptions } from './ConfirmDialog';
 export type { SwitchVariant } from './Switch';
 
 // Version
-export const VERSION = '0.1.3';
+export const VERSION = '0.1.35';
+

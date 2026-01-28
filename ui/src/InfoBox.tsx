@@ -1,43 +1,33 @@
 import React from 'react';
-import Card from './Card';
+import Notice from './Notice';
 
 interface InfoBoxProps {
     title: string;
     children: React.ReactNode;
     variant?: 'default' | 'warning' | 'info' | 'success' | 'danger';
     className?: string;
+    /** Compact mode for inline usage */
+    compact?: boolean;
 }
 
-// Map InfoBox variants to Card borderAccent and title colors
-const variantConfig: Record<string, { borderAccent: 'none' | 'success' | 'info' | 'danger' | 'amber' | 'purple' | 'orange' | 'gray', titleColor: string }> = {
-    default: { borderAccent: 'gray', titleColor: 'text-foreground' },
-    warning: { borderAccent: 'amber', titleColor: 'text-amber' },
-    info: { borderAccent: 'info', titleColor: 'text-info' },
-    success: { borderAccent: 'success', titleColor: 'text-success' },
-    danger: { borderAccent: 'danger', titleColor: 'text-danger' },
-};
-
+/**
+ * @deprecated Use Notice component instead. InfoBox is now a wrapper around Notice.
+ */
 export default function InfoBox({
     title,
     children,
     variant = 'default',
-    className = ''
+    className = '',
+    compact = false,
 }: InfoBoxProps) {
-    const config = variantConfig[variant] || variantConfig.default;
-
     return (
-        <Card
-            borderAccent={config.borderAccent}
-            padding="md"
+        <Notice
+            variant={variant}
+            title={title}
             className={className}
+            compact={compact}
         >
-            <h4 className={`font-medium mb-2 ${config.titleColor}`}>
-                {title}
-            </h4>
-            <div className="text-sm text-muted-foreground space-y-1 [&>ul]:list-disc [&>ul]:list-outside [&>ul]:pl-3 [&>ol]:list-decimal [&>ol]:list-outside [&>ol]:pl-4">
-                {children}
-            </div>
-        </Card>
+            {children}
+        </Notice>
     );
 }
-

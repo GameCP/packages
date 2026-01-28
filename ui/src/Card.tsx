@@ -1,7 +1,7 @@
 'use client';
 
 import React, { ReactNode, useState } from 'react';
-import { IconType } from 'react-icons';
+import type { IconType } from 'react-icons';
 import { DropDownArrow } from './DropDown';
 
 // Base card props
@@ -42,15 +42,15 @@ interface HeaderCardProps extends InteractiveCardProps {
   description?: string;
   icon?: IconType;
   iconColor?:
-  | 'success'
-  | 'info'
-  | 'danger'
-  | 'amber'
-  | 'purple'
-  | 'orange'
-  | 'gray'
-  | 'indigo'
-  | 'pink';
+    | 'success'
+    | 'info'
+    | 'danger'
+    | 'amber'
+    | 'purple'
+    | 'orange'
+    | 'gray'
+    | 'indigo'
+    | 'pink';
   iconSize?: 'sm' | 'md' | 'lg';
   actionButton?: ReactNode;
   headerClassName?: string;
@@ -79,10 +79,19 @@ interface CardProps extends AccordionCardProps, StatusCardProps {
   overflow?: 'visible' | 'hidden' | 'scroll' | 'auto';
   minHeight?: string;
   maxHeight?: string;
-  id?: string;
   headerBorder?: string;
   headerBg?: string;
-  headerStatus?: 'online' | 'offline' | 'maintenance' | 'error' | 'restarting' | 'starting' | 'success' | 'info' | 'updating' | 'unknown';
+  headerStatus?:
+    | 'online'
+    | 'offline'
+    | 'maintenance'
+    | 'error'
+    | 'restarting'
+    | 'starting'
+    | 'success'
+    | 'info'
+    | 'updating'
+    | 'unknown';
 }
 
 // Padding class mapping
@@ -116,10 +125,10 @@ const variantClasses: Record<CardVariant, string> = {
 
 // Icon color class mapping
 const iconColorClasses: Record<string, string> = {
-  success: 'text-success',
-  info: 'text-info',
-  danger: 'text-danger',
-  amber: 'text-amber',
+  green: 'text-success',
+  blue: 'text-primary',
+  red: 'text-destructive',
+  yellow: 'text-amber',
   purple: 'text-purple',
   orange: 'text-orange',
   gray: 'text-muted-foreground',
@@ -136,10 +145,10 @@ const iconSizeClasses: Record<string, string> = {
 
 // Status class mapping
 const statusClasses: Record<string, string> = {
-  success: 'bg-success/10 border-success',
-  warning: 'bg-amber/10 border-amber',
-  error: 'bg-danger/10 border-danger',
-  info: 'bg-info/10 border-info',
+  success: 'bg-success-light border-success-light',
+  warning: 'bg-amber/10 border-amber/30',
+  error: 'bg-destructive border-destructive',
+  info: 'bg-primary border-primary',
   neutral: 'bg-muted border-border',
 };
 
@@ -174,26 +183,25 @@ export default function Card({
   headerBorder,
   headerBg,
   headerStatus,
-  id,
 }: CardProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   // Map header status to border and bg classes
-  const getHeaderStatusClasses = (status: CardProps['headerStatus']) => {
-    switch (status) {
+  const getHeaderStatusClasses = (statusValue: CardProps['headerStatus']) => {
+    switch (statusValue) {
       case 'online':
       case 'success':
-        return { border: 'bg-success', bg: 'status-running-bg-50' };
+        return { border: 'bg-success', bg: 'bg-success/10' };
       case 'offline':
       case 'error':
-        return { border: 'bg-destructive', bg: 'status-error-bg-50' };
+        return { border: 'bg-destructive', bg: 'bg-danger/10' };
       case 'maintenance':
       case 'starting':
       case 'info':
-        return { border: 'bg-warning', bg: 'status-starting-bg-50' };
+        return { border: 'bg-amber', bg: 'bg-amber/10' };
       case 'restarting':
       case 'updating':
-        return { border: 'bg-orange', bg: 'status-restarting-bg-50' };
+        return { border: 'bg-orange', bg: 'bg-orange/10' };
       case 'unknown':
         return { border: 'bg-muted-foreground/30', bg: 'bg-muted/10' };
       default:
@@ -210,7 +218,9 @@ export default function Card({
     variantClasses[variant],
     paddingClasses[padding],
     borderAccentClasses[borderAccent],
-    overflow !== 'visible' ? `overflow-${overflow}` : '',
+    overflow !== 'visible' || activeHeaderBorder
+      ? `overflow-${overflow === 'visible' && activeHeaderBorder ? 'hidden' : overflow}`
+      : '',
     activeHeaderBorder ? 'relative' : '',
     hover ? 'hover:shadow-md transition-shadow' : '',
     clickable || onClick ? 'cursor-pointer' : '',
@@ -240,7 +250,6 @@ export default function Card({
 
   return (
     <div
-      id={id}
       className={`${baseClasses} ${className}`}
       style={style}
       onClick={clickable || onClick ? handleClick : undefined}
@@ -248,13 +257,17 @@ export default function Card({
       {/* Header Accent */}
       {activeHeaderBorder && (
         <div className="absolute top-0 left-0 right-0 flex justify-center z-10 pointer-events-none">
-          <div className={`h-1.5 w-24 ${activeHeaderBorder} rounded-b-xl shadow-sm`} />
+          <div
+            className={`h-1.5 w-24 ${activeHeaderBorder} rounded-b-xl shadow-sm`}
+          />
         </div>
       )}
 
       {/* Header Section */}
       {(title || subtitle || description || Icon || actionButton || status) && (
-        <div className={`${activeHeaderBg ? activeHeaderBg + ' ' : ''}${headerClassName}${activeHeaderBorder ? ' pt-6 pb-4 px-4' : ''}`}>
+        <div
+          className={`${activeHeaderBg ? activeHeaderBg + ' ' : ''}${headerClassName}${activeHeaderBorder ? ' pt-6 pb-4 px-4' : ''}`}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
               {/* Icon */}

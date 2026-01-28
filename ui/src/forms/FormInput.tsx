@@ -1,0 +1,853 @@
+import React, { useState, useRef, useCallback, useId } from 'react';
+import {
+  RiEyeLine,
+  RiEyeOffLine,
+  RiCloseLine,
+  RiRefreshLine,
+  RiFileCopyLine,
+  RiCheckLine,
+} from 'react-icons/ri';
+import Select from '../dropdowns/presets/Select';
+import { SkeletonItem } from '../Skeleton';
+import Switch from '../Switch';
+import VariableSelector, { VariableItem } from '../VariableSelector';
+import { formatVariableForDisplay } from '../lib/variableSubstitution.client';
+import ActionButton from '../buttons/ActionButton';
+import SharedTooltip from '../SharedTooltip';
+
+interface SelectOption {
+  value: string;
+  label: string;
+  description?: React.ReactNode;
+}
+
+type IconConfig =
+  | React.ReactNode
+  | { left?: React.ReactNode; right?: React.ReactNode };
+
+interface FormInputProps {
+  label: string;
+  name: string;
+  type?:
+  | 'text'
+  | 'email'
+  | 'password'
+  | 'number'
+  | 'tel'
+  | 'url'
+  | 'select'
+  | 'checkbox'
+  | 'textarea'
+  | 'color';
+  value: string | number | boolean;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  placeholder?: string;
+  required?: boolean;
+  disabled?: boolean;
+  error?: string | React.ReactNode;
+  className?: string;
+  inputClassName?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  maxLength?: number;
+  autoComplete?: string;
+  description?: string | React.ReactNode;
+  footerDescription?: string | React.ReactNode;
+  autoFocus?: boolean;
+  onKeyDown?: (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  onBlur?: (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  // Icon props
+  icon?: IconConfig;
+  // Select-specific props
+  options?: SelectOption[];
+  multiSelect?: boolean;
+  selectWidth?: number;
+  searchable?: boolean;
+  clearable?: boolean;
+  // Textarea-specific props
+  rows?: number;
+  // Password-specific props
+  showHidePassword?: boolean;
+  onGeneratePassword?: () => void; // New prop for password generation
+  // Loading state
+  isLoading?: boolean;
+  // Copy to clipboard
+  copyable?: boolean;
+  // Read-only display (no onChange required)
+  readOnly?: boolean;
+  // Side actions focusable
+  sideActionTabbable?: boolean;
+  // Ref to the input element
+  inputRef?: React.RefObject<HTMLInputElement | HTMLTextAreaElement>;
+  // Variable picker configuration
+  variablePicker?: {
+    mode?: 'predefined' | 'fields' | 'both' | 'environment' | 'admin' | 'all';
+    fields?: any[];
+    environmentVars?: Record<string, any>;
+    adminEnvironmentVars?: Record<string, any>;
+  };
+}
+
+export default function FormInput({
+  label,
+  name,
+  type = 'text',
+  value,
+  onChange,
+  placeholder,
+  required = false,
+  disabled = false,
+  error,
+  className = '',
+  inputClassName = '',
+  min,
+  max,
+  step,
+  maxLength,
+  autoComplete,
+  description,
+  footerDescription,
+  autoFocus = false,
+  onKeyDown,
+  onBlur,
+  icon,
+  options = [],
+  multiSelect = false,
+  selectWidth,
+  searchable = false,
+  clearable = true,
+  rows = 3,
+  showHidePassword = false,
+  onGeneratePassword,
+  isLoading = false,
+  copyable = false,
+  readOnly = false,
+  sideActionTabbable = false,
+  inputRef,
+  variablePicker,
+}: FormInputProps) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const internalInputRef = useRef<HTMLInputElement>(null);
+  const actualInputRef =
+    (inputRef as React.RefObject<HTMLInputElement>) || internalInputRef;
+  const uniqueId = useId();
+
+  // Handle variable insertion at cursor position (or append if not focused)
+  const handleVariableInsert = useCallback(
+    (variable: VariableItem) => {
+      const input = actualInputRef.current;
+      const currentValue = String(value);
+      const variableText = formatVariableForDisplay(variable.key);
+
+      let newValue: string;
+      let newCursorPosition: number;
+
+      // Check if input is focused and has valid selection
+      if (input && document.activeElement === input) {
+        const start = input.selectionStart || 0;
+        const end = input.selectionEnd || 0;
+        // Insert at cursor position
+        newValue =
+          currentValue.slice(0, start) + variableText + currentValue.slice(end);
+        newCursorPosition = start + variableText.length;
+      } else {
+        // Input not focused - append to end
+        newValue = currentValue + variableText;
+        newCursorPosition = newValue.length;
+      }
+
+      // Create synthetic event
+      const syntheticEvent = {
+        target: { name, value: newValue },
+      } as React.ChangeEvent<HTMLInputElement>;
+      onChange(syntheticEvent);
+
+      // Focus input and set cursor position
+      setTimeout(() => {
+        if (input) {
+          input.focus();
+          input.setSelectionRange(newCursorPosition, newCursorPosition);
+        }
+      }, 0);
+    },
+    [value, name, onChange, actualInputRef]
+  );
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(String(value));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  // Helper function to determine if icons should be shown for this input type
+  const shouldShowIcons = (inputType: string) => {
+    return inputType !== 'checkbox' && inputType !== 'textarea';
+  };
+
+  // Helper function to get icon configuration
+  const getIconConfig = (
+    iconProp: IconConfig | undefined
+  ): { left: React.ReactNode; right: React.ReactNode } => {
+    if (!iconProp) return { left: null, right: null };
+
+    // If it's a React element (like <RiUserLine />), treat it as a left icon
+    if (React.isValidElement(iconProp)) {
+      return { left: iconProp, right: null };
+    }
+
+    // If it's an object with left/right properties
+    if (
+      typeof iconProp === 'object' &&
+      iconProp !== null &&
+      ('left' in iconProp || 'right' in iconProp)
+    ) {
+      return { left: iconProp.left || null, right: iconProp.right || null };
+    }
+
+    // Fallback: treat as left icon (but only if it's a valid ReactNode)
+    return {
+      left: React.isValidElement(iconProp) ? iconProp : null,
+      right: null,
+    };
+  };
+
+  // Helper function to render icon
+  const renderIcon = (
+    iconNode: React.ReactNode,
+    position: 'left' | 'right'
+  ) => {
+    if (!iconNode) return null;
+
+    // For number inputs, move right icons further left to avoid browser arrows
+    const rightPositionClass =
+      position === 'right' && type === 'number'
+        ? 'right-4 pr-3' // Move slightly left for number inputs
+        : position === 'right'
+          ? 'right-0 pr-3' // Normal position for other inputs
+          : 'left-0 pl-3'; // Left position unchanged
+
+    return (
+      <div
+        className={`absolute inset-y-0 ${rightPositionClass} flex items-center pointer-events-none`}
+      >
+        <div className="text-muted-foreground">{iconNode}</div>
+      </div>
+    );
+  };
+
+  // Helper function to get input padding classes based on icons
+  const getInputPaddingClasses = (
+    inputType: string,
+    iconConfig: { left: any; right: any }
+  ) => {
+    if (!shouldShowIcons(inputType)) return '';
+
+    const paddingClasses = [];
+    if (iconConfig.left) paddingClasses.push('pl-10');
+    if (iconConfig.right) {
+      // For number inputs, add extra padding to account for moved icon
+      paddingClasses.push(inputType === 'number' ? 'pr-12' : 'pr-10');
+    }
+
+    return paddingClasses.join(' ');
+  };
+
+  const handleSelectChange = (selectedValue: string | string[]) => {
+    // Create a synthetic event to maintain compatibility with existing onChange handlers
+    const syntheticEvent = {
+      target: {
+        name,
+        value: Array.isArray(selectedValue) ? selectedValue[0] || '' : selectedValue,
+      },
+    } as React.ChangeEvent<HTMLInputElement>;
+
+    onChange(syntheticEvent);
+  };
+
+  // Skeleton component for loading state - shows real labels, skeletons only the input
+  const SkeletonInput = () => {
+    const iconConfig = getIconConfig(icon);
+    const hasLeftIcon = iconConfig.left;
+    const hasRightIcon = iconConfig.right;
+
+    if (type === 'checkbox') {
+      return (
+        <div className="flex items-center p-2 space-x-3 h-full">
+          <div className="relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full bg-input">
+            <span className="inline-block h-4 w-4 transform rounded-full bg-white border border-border translate-x-1" />
+          </div>
+          <div className="flex flex-col">
+            <label className="form-label">
+              {label}
+              {required && <span className="text-destructive ml-1">*</span>}
+            </label>
+            {description && (
+              <p className="text-sm text-muted-foreground">{description}</p>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    if (type === 'textarea') {
+      return (
+        <div className="space-y-2">
+          <label className="form-label">
+            {label}
+            {required && <span className="text-danger ml-1">*</span>}
+          </label>
+          {description && (
+            <p className="text-sm text-secondary-foreground">{description}</p>
+          )}
+          <div className="relative">
+            <SkeletonItem
+              width="w-full"
+              height="h-24"
+              className={`rounded-md`}
+            />
+          </div>
+          {footerDescription && (
+            <p className="text-sm text-secondary-foreground">
+              {footerDescription}
+            </p>
+          )}
+        </div>
+      );
+    }
+
+    if (type === 'color') {
+      return (
+        <div className="space-y-2">
+          <label className="form-label">
+            {label}
+            {required && <span className="text-danger ml-1">*</span>}
+          </label>
+          {description && (
+            <p className="text-sm text-secondary-foreground">{description}</p>
+          )}
+          <div className="flex items-center space-x-3">
+            <SkeletonItem width="w-10" height="h-10" className="rounded-md" />
+            <div className="relative">
+              <SkeletonItem width="w-24" height="h-10" className="rounded-md" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Default input skeleton (text, email, password, number, tel, url, select)
+    return (
+      <div>
+        <label className="form-label">
+          {label}
+          {required && <span className="text-danger ml-1">*</span>}
+        </label>
+        {description && (
+          <p className="text-sm text-secondary-foreground">{description}</p>
+        )}
+        <div className="relative">
+          <SkeletonItem
+            width="w-full"
+            height="h-10"
+            className={`rounded-md ${hasLeftIcon ? 'pl-10' : ''
+              } ${hasRightIcon ? 'pr-10' : ''}`}
+          />
+          {hasLeftIcon && (
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+              <SkeletonItem width="w-5" height="h-5" className="rounded-full" />
+            </div>
+          )}
+          {hasRightIcon && (
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <SkeletonItem width="w-5" height="h-5" className="rounded-full" />
+            </div>
+          )}
+        </div>
+        {footerDescription && (
+          <p className="text-sm text-secondary-foreground">
+            {footerDescription}
+          </p>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className={`form-group ${className}`}>
+      {isLoading ? (
+        <SkeletonInput />
+      ) : type === 'checkbox' ? (
+        <div className="flex flex-col gap-1">
+          <Switch
+            checked={Boolean(value)}
+            onChange={checked => {
+              // Create a synthetic event that matches what the parent expects
+              const syntheticEvent = {
+                target: {
+                  name,
+                  value: checked,
+                  checked,
+                },
+                currentTarget: {
+                  name,
+                  value: checked,
+                  checked,
+                },
+              } as unknown as React.ChangeEvent<HTMLInputElement>;
+              onChange(syntheticEvent);
+            }}
+            disabled={disabled}
+            label={
+              <>
+                {label}
+                {required && <span className="text-destructive ml-1">*</span>}
+              </>
+            }
+            description={description}
+          />
+          {error && (
+            <div id={`${name}-error`} className="form-error" role="alert">
+              {typeof error === 'string' ? <p>{error}</p> : error}
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
+          {label && (
+            <label htmlFor={name} className="form-label">
+              {label}
+              {required && <span className="form-label-required">*</span>}
+            </label>
+          )}
+          {description && (
+            <p id={`${name}-description`} className="form-description">
+              {description}
+            </p>
+          )}
+          {type === 'select' ? (
+            <div className="flex items-center">
+              <div
+                className={`relative flex-1 ${footerDescription ? 'border-r-2 border-info/50 hover:border-info rounded-r-sm cursor-help transition-colors' : ''}`}
+                data-tooltip-id={
+                  footerDescription ? `${uniqueId}-help` : undefined
+                }
+              >
+                <Select
+                  value={
+                    multiSelect
+                      ? Array.isArray(value)
+                        ? value
+                        : value
+                          ? String(value).split(',')
+                          : []
+                      : String(value)
+                  }
+                  onChange={
+                    multiSelect
+                      ? (values: string | string[]) => {
+                        const valuesArray = Array.isArray(values)
+                          ? values
+                          : [values];
+                        const syntheticEvent = {
+                          target: {
+                            name,
+                            value: valuesArray.join(','),
+                          },
+                        } as React.ChangeEvent<HTMLInputElement>;
+                        onChange(syntheticEvent);
+                      }
+                      : handleSelectChange
+                  }
+                  options={options || []}
+                  placeholder={placeholder || 'Select an option...'}
+                  className={`${error ? 'form-input-error' : ''} ${inputClassName}`}
+                  multiple={multiSelect}
+                  width={selectWidth}
+                  searchable={searchable}
+                  clearable={clearable}
+                  disabled={disabled}
+                />
+                {shouldShowIcons(type) &&
+                  (() => {
+                    const iconConfig = getIconConfig(icon);
+                    return (
+                      <>
+                        {renderIcon(iconConfig.left, 'left')}
+                        {renderIcon(iconConfig.right, 'right')}
+                      </>
+                    );
+                  })()}
+              </div>
+              {/* Help tooltip for footer description */}
+              {footerDescription && (
+                <SharedTooltip
+                  id={`${uniqueId}-help`}
+                  place="bottom"
+                  variant="help"
+                  offset={8}
+                >
+                  {footerDescription}
+                </SharedTooltip>
+              )}
+            </div>
+          ) : type === 'textarea' ? (
+            <div className="flex items-start">
+              <div
+                className={`relative flex-1 ${footerDescription ? 'border-r-2 border-info/50 hover:border-info rounded-r-sm cursor-help transition-colors' : ''}`}
+                data-tooltip-id={
+                  footerDescription ? `${uniqueId}-help` : undefined
+                }
+              >
+                <textarea
+                  id={name}
+                  name={name}
+                  value={value as string}
+                  onChange={onChange}
+                  placeholder={placeholder}
+                  required={required}
+                  disabled={disabled}
+                  autoFocus={autoFocus}
+                  onKeyDown={onKeyDown}
+                  onBlur={onBlur}
+                  rows={rows}
+                  maxLength={maxLength}
+                  aria-invalid={error ? 'true' : 'false'}
+                  aria-describedby={
+                    error
+                      ? `${name}-error`
+                      : description
+                        ? `${name}-description`
+                        : undefined
+                  }
+                  className={`form-input ${error ? 'form-input-error' : ''} ${inputClassName}`}
+                />
+              </div>
+              {/* Help tooltip for footer description */}
+              {footerDescription && (
+                <SharedTooltip
+                  id={`${uniqueId}-help`}
+                  place="bottom"
+                  variant="help"
+                  offset={8}
+                >
+                  {footerDescription}
+                </SharedTooltip>
+              )}
+            </div>
+          ) : type === 'color' ? (
+            <div
+              className={`flex items-center space-x-3 ${footerDescription ? 'border-r-2 border-info/50 hover:border-info pr-2 rounded-r-sm cursor-help transition-colors' : ''}`}
+              data-tooltip-id={
+                footerDescription ? `${uniqueId}-help` : undefined
+              }
+            >
+              <div className="relative w-10 h-10 border border-input rounded-md overflow-hidden bg-card">
+                <input
+                  id={name}
+                  name={name}
+                  type="color"
+                  value={value as string}
+                  onChange={onChange}
+                  required={required}
+                  disabled={disabled}
+                  className="absolute inset-0 w-full h-full cursor-pointer opacity-0"
+                />
+                <div
+                  className="w-full h-full rounded-md"
+                  style={{ backgroundColor: value as string }}
+                />
+              </div>
+
+              <div className="relative">
+                <input
+                  id={`${name}-text`}
+                  name={`${name}-text`}
+                  type="text"
+                  value={value as string}
+                  onChange={onChange}
+                  placeholder={placeholder}
+                  required={required}
+                  disabled={disabled}
+                  maxLength={maxLength}
+                  autoComplete={autoComplete}
+                  autoFocus={autoFocus}
+                  onKeyDown={onKeyDown}
+                  onBlur={onBlur}
+                  className={`form-input max-w-24 ${error ? 'form-input-error' : ''} ${getInputPaddingClasses(type, getIconConfig(icon))} ${inputClassName}`}
+                  aria-label={`${label} text input`}
+                />
+                {shouldShowIcons(type) &&
+                  (() => {
+                    const iconConfig = getIconConfig(icon);
+                    return (
+                      <>
+                        {renderIcon(iconConfig.left, 'left')}
+                        {renderIcon(iconConfig.right, 'right')}
+                      </>
+                    );
+                  })()}
+              </div>
+              {/* Help tooltip for footer description */}
+              {footerDescription && (
+                <SharedTooltip
+                  id={`${uniqueId}-help`}
+                  place="bottom"
+                  variant="help"
+                  offset={8}
+                >
+                  {footerDescription}
+                </SharedTooltip>
+              )}
+            </div>
+          ) : showHidePassword && type === 'password' ? (
+            <div className="flex items-center">
+              <div
+                className={`relative flex-1 ${footerDescription ? 'border-r-2 border-info/50 hover:border-info rounded-r-sm cursor-help transition-colors' : ''}`}
+                data-tooltip-id={
+                  footerDescription ? `${uniqueId}-help` : undefined
+                }
+              >
+                <input
+                  id={name}
+                  name={name}
+                  type={showPassword ? 'text' : 'password'}
+                  value={value as string | number}
+                  onChange={onChange}
+                  placeholder={placeholder}
+                  required={required}
+                  disabled={disabled || readOnly}
+                  readOnly={readOnly}
+                  maxLength={maxLength}
+                  autoComplete={autoComplete}
+                  autoFocus={autoFocus}
+                  onKeyDown={onKeyDown}
+                  onBlur={onBlur}
+                  aria-invalid={error ? 'true' : 'false'}
+                  aria-describedby={
+                    error
+                      ? `${name}-error`
+                      : description
+                        ? `${name}-description`
+                        : undefined
+                  }
+                  className={`form-input ${error ? 'form-input-error' : ''} ${readOnly ? 'bg-muted cursor-default' : ''} ${copyable ? 'pr-20' : 'pr-10'} ${getInputPaddingClasses(type, getIconConfig(icon))} ${inputClassName}`}
+                />
+                {shouldShowIcons(type) &&
+                  (() => {
+                    const iconConfig = getIconConfig(icon);
+                    return (
+                      <>
+                        {renderIcon(iconConfig.left, 'left')}
+                        {renderIcon(iconConfig.right, 'right')}
+                      </>
+                    );
+                  })()}
+                {/* Copy button for password */}
+                {copyable && (
+                  <button
+                    type="button"
+                    tabIndex={sideActionTabbable ? 0 : -1}
+                    onClick={handleCopy}
+                    className="absolute inset-y-0 right-8 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors duration-200 z-10"
+                    aria-label={`Copy ${label}`}
+                    title={copied ? 'Copied!' : `Copy ${label}`}
+                  >
+                    {copied ? (
+                      <RiCheckLine
+                        className="w-4 h-4 text-success"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <RiFileCopyLine className="w-4 h-4" aria-hidden="true" />
+                    )}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  tabIndex={sideActionTabbable ? 0 : -1}
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors duration-200 z-10"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    <RiEyeOffLine className="w-4 h-4" aria-hidden="true" />
+                  ) : (
+                    <RiEyeLine className="w-4 h-4" aria-hidden="true" />
+                  )}
+                </button>
+                {onGeneratePassword && !readOnly && (
+                  <button
+                    type="button"
+                    tabIndex={sideActionTabbable ? 0 : -1}
+                    onClick={onGeneratePassword}
+                    className={`absolute inset-y-0 ${copyable ? 'right-16' : 'right-8'} flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors duration-200 z-10`}
+                    aria-label="Generate new password"
+                    title="Generate new password"
+                  >
+                    <RiRefreshLine className="w-4 h-4" aria-hidden="true" />
+                  </button>
+                )}
+              </div>
+              {/* Help tooltip for footer description */}
+              {footerDescription && (
+                <SharedTooltip
+                  id={`${uniqueId}-help`}
+                  place="bottom"
+                  variant="help"
+                  offset={8}
+                >
+                  {footerDescription}
+                </SharedTooltip>
+              )}
+            </div>
+          ) : (
+            <div
+              className={`flex items-center ${variablePicker ? 'input-group' : ''} ${footerDescription ? 'border-r-2 border-info/50 hover:border-info rounded-r-sm cursor-help transition-colors' : ''}`}
+              data-tooltip-id={
+                footerDescription ? `${uniqueId}-help` : undefined
+              }
+            >
+              <div className="relative group flex-1">
+                <input
+                  ref={actualInputRef}
+                  id={name}
+                  name={name}
+                  type={type}
+                  value={value as string | number}
+                  onChange={onChange}
+                  placeholder={placeholder}
+                  required={required}
+                  disabled={disabled || readOnly}
+                  readOnly={readOnly}
+                  min={min}
+                  max={max}
+                  step={step}
+                  maxLength={maxLength}
+                  autoComplete={autoComplete}
+                  autoFocus={autoFocus}
+                  onKeyDown={onKeyDown}
+                  onBlur={onBlur}
+                  aria-invalid={error ? 'true' : 'false'}
+                  aria-describedby={
+                    error
+                      ? `${name}-error`
+                      : description
+                        ? `${name}-description`
+                        : undefined
+                  }
+                  className={`form-input ${error ? 'form-input-error' : ''} ${readOnly ? 'bg-muted cursor-default' : ''} ${copyable ? 'pr-10' : ''} ${variablePicker ? 'rounded-r-none border-r-0' : ''} ${getInputPaddingClasses(type, getIconConfig(icon))} ${inputClassName}`}
+                />
+                {shouldShowIcons(type) &&
+                  (() => {
+                    const iconConfig = getIconConfig(icon);
+                    return (
+                      <>
+                        {renderIcon(iconConfig.left, 'left')}
+                        {renderIcon(iconConfig.right, 'right')}
+                      </>
+                    );
+                  })()}
+                {/* Copy button */}
+                {copyable && (
+                  <button
+                    type="button"
+                    tabIndex={sideActionTabbable ? 0 : -1}
+                    onClick={handleCopy}
+                    className={`absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-all duration-200 z-10`}
+                    aria-label={`Copy ${label}`}
+                    title={copied ? 'Copied!' : `Copy ${label}`}
+                  >
+                    {copied ? (
+                      <RiCheckLine
+                        className="w-4 h-4 text-success"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <RiFileCopyLine className="w-4 h-4" aria-hidden="true" />
+                    )}
+                  </button>
+                )}
+                {/* Clear button for text inputs */}
+                {clearable &&
+                  !copyable &&
+                  value !== '' &&
+                  value !== null &&
+                  value !== undefined &&
+                  !disabled &&
+                  !readOnly && (
+                    <div
+                      className={`absolute top-px bottom-px ${type === 'number' ? 'right-8' : 'right-px'} flex items-center px-1.5 opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity duration-200 z-10 bg-background/80 backdrop-blur-sm rounded-r`}
+                    >
+                      <ActionButton
+                        variant="input"
+                        icon={RiCloseLine}
+                        iconOnly
+                        size="sm"
+                        title={`Clear ${label}`}
+                        tooltipId={`${uniqueId}-clear`}
+                        onClick={() => {
+                          const syntheticEvent = {
+                            target: { name, value: '' },
+                          } as React.ChangeEvent<HTMLInputElement>;
+                          onChange(syntheticEvent);
+                        }}
+                        tabIndex={sideActionTabbable ? 0 : -1}
+                      />
+                    </div>
+                  )}
+              </div>
+              {/* Variable picker - segmented button on the right */}
+              {variablePicker && (
+                <VariableSelector
+                  onSelectVariable={handleVariableInsert}
+                  buttonText=""
+                  buttonTitle="Insert Variable"
+                  tooltipId={`${uniqueId}-variable-picker`}
+                  buttonClassName="px-2.5 h-10 text-muted-foreground hover:text-foreground bg-muted hover:bg-accent border border-l-0 border-input rounded-r-md transition-colors duration-200 flex items-center justify-center"
+                  mode={variablePicker.mode || 'predefined'}
+                  fields={variablePicker.fields || []}
+                  environmentVars={variablePicker.environmentVars || {}}
+                  adminEnvironmentVars={
+                    variablePicker.adminEnvironmentVars || {}
+                  }
+                  showSearch={true}
+                  showCategories={true}
+                  placeholder="Search variables..."
+                />
+              )}
+              {/* Help tooltip for footer description */}
+              {footerDescription && (
+                <SharedTooltip
+                  id={`${uniqueId}-help`}
+                  place="bottom"
+                  variant="help"
+                  offset={8}
+                >
+                  {footerDescription}
+                </SharedTooltip>
+              )}
+            </div>
+          )}
+          {error && (
+            <div id={`${name}-error`} className="form-error" role="alert">
+              {typeof error === 'string' ? <p>{error}</p> : error}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}

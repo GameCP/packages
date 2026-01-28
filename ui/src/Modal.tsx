@@ -1,9 +1,8 @@
-'use client';
-
 import { useEffect, ReactNode, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { RiCloseLine } from 'react-icons/ri';
+import UnsavedChangesNotification from './UnsavedChangesNotification';
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,10 +15,12 @@ interface ModalProps {
   className?: string;
   footer?: ReactNode;
   fullScreen?: boolean;
+  fullHeight?: boolean; // Takes full viewport height (with padding) instead of shrinking to content
   noPadding?: boolean;
   footerBg?: 'white' | 'gray';
   variant?: 'default' | 'plain';
   scrollable?: boolean;
+  hasUnsavedChanges?: boolean;
   'aria-describedby'?: string;
   customStyles?: {
     container?: string;
@@ -31,11 +32,11 @@ interface ModalProps {
 }
 
 const sizeClasses = {
-  sm: 'max-w-md',
-  md: 'max-w-2xl',
-  lg: 'max-w-4xl',
-  xl: 'max-w-6xl',
-  full: 'max-w-full mx-4',
+  sm: 'md:max-w-md',
+  md: 'md:max-w-2xl',
+  lg: 'md:max-w-4xl',
+  xl: 'md:max-w-6xl',
+  full: 'max-w-full md:mx-4',
 };
 
 export default function Modal({
@@ -49,10 +50,12 @@ export default function Modal({
   className = '',
   footer,
   fullScreen = false,
+  fullHeight = false,
   noPadding = false,
   footerBg = 'gray',
   variant = 'default',
   scrollable = true,
+  hasUnsavedChanges = false,
   'aria-describedby': ariaDescribedBy,
   customStyles = {},
 }: ModalProps) {
@@ -104,11 +107,11 @@ export default function Modal({
         // Only auto-focus if user is not currently typing in an input
         const activeElement = document.activeElement;
         const isHTMLElement = activeElement instanceof HTMLElement;
-        const isUserTyping = activeElement && (
-          activeElement.tagName === 'INPUT' ||
-          activeElement.tagName === 'TEXTAREA' ||
-          (isHTMLElement && activeElement.isContentEditable)
-        );
+        const isUserTyping =
+          activeElement &&
+          (activeElement.tagName === 'INPUT' ||
+            activeElement.tagName === 'TEXTAREA' ||
+            (isHTMLElement && activeElement.isContentEditable));
 
         // Only focus if:
         // 1. User is not typing
@@ -155,7 +158,7 @@ export default function Modal({
       }
     };
 
-    // Handle ESC key press
+    // Handle ESC key press - respects blocking when there are unsaved changes
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && !blocking) {
         onClose();
@@ -245,7 +248,7 @@ export default function Modal({
             : customStyles.backdrop
               ? `${customStyles.backdrop} justify-center`
               : 'justify-center bg-black/10'
-            } z-50 m-0 ${fullScreen ? 'p-0' : 'p-4'}`}
+            } z-50 m-0 ${fullScreen ? 'p-0' : 'p-0 md:p-4'}`}
           variants={backdropVariants}
           initial="hidden"
           animate={isOpen ? 'visible' : 'hidden'}
@@ -260,10 +263,10 @@ export default function Modal({
             aria-labelledby={title ? 'modal-title-plain' : undefined}
             aria-describedby={ariaDescribedBy || 'modal-content-plain'}
             tabIndex={-1}
-            className={`w-full flex flex-col overflow-hidden relative ${customStyles.container || 'bg-card shadow-xl'
+            className={`w-full flex flex-col overflow-hidden outline-none relative ${customStyles.container || 'bg-card shadow-xl'
               } ${fullScreen
                 ? 'h-full rounded-none'
-                : `rounded-lg ${className} ${sizeClasses[size]} max-h-[90vh]`
+                : `h-full md:rounded-lg ${className} ${sizeClasses[size]} md:max-h-[90vh]`
               }`}
             variants={modalVariants}
             initial="hidden"
@@ -274,7 +277,7 @@ export default function Modal({
             {/* Content with internal controls */}
             <div
               id="modal-content-plain"
-              className={`flex-1 ${customStyles.content || ''}`}
+              className={`flex-1 flex flex-col min-h-0 overflow-hidden ${customStyles.content || ''}`}
             >
               {children}
             </div>
@@ -291,7 +294,7 @@ export default function Modal({
       <motion.div
         key="modal-backdrop"
         className={`modal-backdrop fixed inset-0 w-screen h-screen bg-black/10 flex items-center ${customStyles.backdrop || 'justify-center'
-          } z-50 m-0 ${fullScreen ? 'p-0' : 'p-4'}`}
+          } z-50 m-0 ${fullScreen ? 'p-0' : 'p-0 md:p-4'}`}
         variants={backdropVariants}
         initial="hidden"
         animate={isOpen ? 'visible' : 'hidden'}
@@ -306,9 +309,11 @@ export default function Modal({
           aria-labelledby={title ? 'modal-title' : undefined}
           aria-describedby={ariaDescribedBy || 'modal-content'}
           tabIndex={-1}
-          className={`bg-card border border-border shadow-xl w-full flex flex-col overflow-hidden relative ${fullScreen
+          className={`bg-card border border-border shadow-xl w-full flex flex-col overflow-hidden outline-none relative ${fullScreen
             ? 'h-full rounded-none'
-            : `rounded-lg ${customStyles.container || className || sizeClasses[size]} max-h-[90vh]`
+            : fullHeight
+              ? `h-full md:h-[calc(100vh-2rem)] md:rounded-lg ${customStyles.container || className || sizeClasses[size]}`
+              : `h-full md:h-auto md:rounded-lg ${customStyles.container || className || sizeClasses[size]} md:max-h-[90vh]`
             }`}
           variants={modalVariants}
           initial="hidden"
@@ -323,28 +328,36 @@ export default function Modal({
             <div
               className={`px-6 py-4 border-b border-border flex justify-between items-center flex-shrink-0 ${customStyles.header || ''}`}
             >
-              <h2
-                id="modal-title"
-                className="text-xl font-semibold text-foreground"
-              >
-                {title}
-              </h2>
-              <button
-                onClick={onClose}
-                className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full transition-colors"
-                title="Close"
-                aria-label="Close modal"
-                disabled={blocking}
-              >
-                <RiCloseLine className="w-5 h-5" aria-hidden="true" />
-              </button>
+              <div className="flex items-center gap-3">
+                <h2
+                  id="modal-title"
+                  className="text-xl font-semibold text-foreground"
+                >
+                  {title}
+                </h2>
+              </div>
+              <div className="flex items-center gap-3">
+                <UnsavedChangesNotification
+                  show={hasUnsavedChanges}
+                  variant="compact"
+                  showSaveButton={false}
+                />
+                <button
+                  onClick={onClose}
+                  className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full transition-colors"
+                  title="Close"
+                  aria-label="Close modal"
+                >
+                  <RiCloseLine className="w-5 h-5" aria-hidden="true" />
+                </button>
+              </div>
             </div>
           ) : null}
 
           {/* Scrollable Content */}
           <div
             id="modal-content"
-            className={`bg-background text-foreground flex-1 ${scrollable ? 'overflow-y-auto' : ''} ${fullScreen || noPadding ? 'p-0' : 'px-6 py-4'}`}
+            className={`bg-background text-foreground flex-1 ${scrollable ? 'overflow-y-auto' : ''} ${fullScreen || noPadding ? 'p-0' : 'px-6 py-4'} ${customStyles.content || ''}`}
           >
             {children}
           </div>

@@ -11,7 +11,7 @@ const paddingClasses = {
     none: '',
     sm: 'p-4',
     md: 'p-4 lg:p-6',
-    lg: 'p-4 lg:p-8',
+    lg: 'px-4 sm:px-6 lg:px-6 py-6',
 };
 
 export default function Container({

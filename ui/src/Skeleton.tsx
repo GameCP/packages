@@ -102,7 +102,7 @@ export function SkeletonTable({
           )}
           <tbody className="table-body-card">
             {Array.from({ length: rows }).map((_, rowIndex) => (
-              <tr key={rowIndex}>
+              <tr key={rowIndex} className="hover:bg-transparent">
                 {Array.from({ length: columns }).map((_, colIndex) => (
                   <td key={colIndex} className="px-6 py-4">
                     <div className="space-y-2">
@@ -185,10 +185,14 @@ export function SkeletonGameServerCard({
 }) {
   return (
     <div
-      className={`card overflow-hidden h-[380px] flex flex-col ${className}`}
+      className={`card relative overflow-hidden h-[380px] flex flex-col ${className}`}
     >
+      {/* Skeleton Header Accent */}
+      <div className="absolute top-0 left-0 right-0 flex justify-center z-10 pointer-events-none">
+        <div className="h-1.5 w-24 bg-muted/20 rounded-b-xl" />
+      </div>
       {/* Game Server Header */}
-      <div className="relative px-5 py-4 border-b border-border bg-muted overflow-hidden">
+      <div className="px-5 pt-7 pb-4 border-b border-border bg-muted/10">
         {/* Title Row */}
         <div className="flex items-center space-x-3 relative z-10">
           <div className="min-w-0 flex-1">
@@ -264,20 +268,11 @@ export function SkeletonGameServerCard({
 
       {/* Game Server Actions */}
       <div className="px-4 py-3 bg-card border-t border-border">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center gap-1">
-              <SkeletonItem width="w-8" height="h-8" rounded={true} />
-              <SkeletonItem width="w-8" height="h-8" rounded={true} />
-              <SkeletonItem width="w-8" height="h-8" rounded={true} />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <SkeletonItem width="w-8" height="h-8" rounded={true} />
-            <SkeletonItem width="w-8" height="h-8" rounded={true} />
-            <SkeletonItem width="w-8" height="h-8" rounded={true} />
-          </div>
+        <div className="flex items-center justify-center space-x-2">
+          <SkeletonItem width="w-8" height="h-8" rounded={true} />
+          <SkeletonItem width="w-8" height="h-8" rounded={true} />
+          <SkeletonItem width="w-8" height="h-8" rounded={true} />
+          <SkeletonItem width="w-8" height="h-8" rounded={true} />
         </div>
       </div>
     </div>
@@ -325,9 +320,13 @@ export function SkeletonUserCard({ className = '' }: { className?: string }) {
 // Skeleton for node cards (enhanced to match actual card layout)
 export function SkeletonNodeCard({ className = '' }: { className?: string }) {
   return (
-    <div className={`card overflow-hidden min-h-[320px] ${className}`}>
+    <div className={`card relative overflow-hidden min-h-[320px] ${className}`}>
+      {/* Skeleton Header Accent */}
+      <div className="absolute top-0 left-0 right-0 flex justify-center z-10 pointer-events-none">
+        <div className="h-1.5 w-24 bg-muted/20 rounded-b-xl" />
+      </div>
       {/* Node Header */}
-      <div className="px-4 py-3 border-b border-border bg-muted">
+      <div className="px-4 pt-7 pb-4 border-b border-border bg-muted/10">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             {/* OS Icon */}
@@ -411,7 +410,7 @@ export function SkeletonNodeCard({ className = '' }: { className?: string }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end items-center pt-3 border-t border-border">
+        <div className="flex justify-center items-center pt-3 border-t border-border">
           <div className="flex space-x-2">
             <SkeletonItem width="w-20" height="h-8" rounded={true} />
             <SkeletonItem width="w-8" height="h-8" rounded={true} />
@@ -560,9 +559,13 @@ export function SkeletonNodeTable({
   return (
     <div className={`space-y-4 ${className}`}>
       {Array.from({ length: items }).map((_, i) => (
-        <div key={i} className="card overflow-hidden">
+        <div key={i} className="card relative overflow-hidden">
+          {/* Skeleton Header Accent */}
+          <div className="absolute top-0 left-0 right-0 flex justify-center z-10 pointer-events-none">
+            <div className="h-1.5 w-24 bg-muted/20 rounded-b-xl" />
+          </div>
           {/* Node Card Header */}
-          <div className="px-6 py-4 border-b border-border bg-muted">
+          <div className="px-6 pt-7 pb-4 border-b border-border bg-muted/10">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 {/* OS Icon */}
@@ -644,7 +647,7 @@ export function SkeletonNodeTable({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-end items-center pt-4 border-t border-border mt-4">
+            <div className="flex justify-center items-center pt-4 border-t border-border mt-4">
               <div className="flex space-x-2">
                 <SkeletonItem width="w-16" height="h-8" rounded={true} />
                 <SkeletonItem width="w-8" height="h-8" rounded={true} />
@@ -671,10 +674,14 @@ export function SkeletonGameServerTable({
       {Array.from({ length: items }).map((_, i) => (
         <div
           key={i}
-          className="card overflow-hidden min-h-[200px] flex flex-col"
+          className="card relative overflow-hidden min-h-[200px] flex flex-col"
         >
+          {/* Skeleton Header Accent */}
+          <div className="absolute top-0 left-0 right-0 flex justify-center z-10 pointer-events-none">
+            <div className="h-1.5 w-24 bg-muted/20 rounded-b-xl" />
+          </div>
           {/* Game Server Header */}
-          <div className="relative px-5 py-4 border-b border-border bg-muted overflow-hidden">
+          <div className="px-5 pt-7 pb-4 border-b border-border bg-muted/10">
             {/* Title Row */}
             <div className="flex items-center space-x-3 relative z-10">
               <div className="min-w-0 flex-1">
@@ -772,20 +779,11 @@ export function SkeletonGameServerTable({
 
           {/* Game Server Actions */}
           <div className="px-4 py-3 bg-card border-t border-border">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <div className="flex items-center gap-1">
-                  <SkeletonItem width="w-8" height="h-8" rounded={true} />
-                  <SkeletonItem width="w-8" height="h-8" rounded={true} />
-                  <SkeletonItem width="w-8" height="h-8" rounded={true} />
-                </div>
-              </div>
-
-              <div className="flex items-center gap-1">
-                <SkeletonItem width="w-8" height="h-8" rounded={true} />
-                <SkeletonItem width="w-8" height="h-8" rounded={true} />
-                <SkeletonItem width="w-8" height="h-8" rounded={true} />
-              </div>
+            <div className="flex items-center justify-center space-x-2">
+              <SkeletonItem width="w-8" height="h-8" rounded={true} />
+              <SkeletonItem width="w-8" height="h-8" rounded={true} />
+              <SkeletonItem width="w-8" height="h-8" rounded={true} />
+              <SkeletonItem width="w-8" height="h-8" rounded={true} />
             </div>
           </div>
         </div>
@@ -828,7 +826,7 @@ export function SkeletonGamesTable({
             <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Created
             </th>
-            <th className="px-2 py-1 rounded-md backdrop-blur-sm text-center text-xs font-medium text-muted-foreground uppercase tracking-wider sticky right-0">
+            <th className="px-2 py-1 rounded-md bg-muted backdrop-blur-sm text-center text-xs font-medium text-muted-foreground uppercase tracking-wider sticky right-0">
               Actions
             </th>
           </tr>
@@ -837,7 +835,7 @@ export function SkeletonGamesTable({
         {/* Table Body */}
         <tbody className="table-body-card">
           {Array.from({ length: items }).map((_, i) => (
-            <tr key={i} className="hover:bg-muted/50">
+            <tr key={i} className="">
               {/* Game Column */}
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
@@ -958,6 +956,137 @@ export function SkeletonEnvironmentsList({
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Skeleton for metrics charts - prevents layout shift with fixed height reservation
+interface SkeletonMetricsChartProps {
+  className?: string;
+  height?: number;
+  showLegend?: boolean;
+  title?: string;
+}
+
+export function SkeletonMetricsChart({
+  className = '',
+  height = 400,
+  showLegend = true,
+  title,
+}: SkeletonMetricsChartProps) {
+  return (
+    <div className={`card overflow-hidden ${className}`}>
+      {/* Card Header */}
+      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <SkeletonItem width="w-5" height="h-5" />
+          <div>
+            {title ? (
+              <span className="text-sm font-semibold text-foreground">{title}</span>
+            ) : (
+              <SkeletonItem width="w-24" height="h-5" />
+            )}
+          </div>
+        </div>
+        {/* Time range selector skeleton */}
+        <div className="flex items-center space-x-4">
+          <SkeletonItem width="w-24" height="h-3" className="hidden sm:block" />
+          <SkeletonItem width="w-28" height="h-9" />
+        </div>
+      </div>
+
+      {/* Chart Content Area - fixed height to prevent layout shift */}
+      <div className="pt-2 pb-4">
+        <div
+          className="relative w-full animate-pulse"
+          style={{ height: `${height}px` }}
+        >
+          {/* Y-axis skeleton */}
+          <div className="absolute left-0 top-2 bottom-8 w-8 flex flex-col justify-between">
+            <SkeletonItem width="w-8" height="h-3" />
+            <SkeletonItem width="w-6" height="h-3" />
+            <SkeletonItem width="w-7" height="h-3" />
+            <SkeletonItem width="w-6" height="h-3" />
+            <SkeletonItem width="w-5" height="h-3" />
+          </div>
+
+          {/* Chart grid area */}
+          <div className="absolute left-10 right-0 top-2 bottom-8">
+            {/* Horizontal grid lines */}
+            <div className="absolute inset-0 flex flex-col justify-between">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="h-px bg-muted/40" />
+              ))}
+            </div>
+
+            {/* Fake chart lines */}
+            <div className="absolute inset-0 flex items-end">
+              <div className="w-full h-[60%] bg-gradient-to-t from-muted/20 to-transparent rounded-t" />
+            </div>
+          </div>
+
+          {/* X-axis skeleton */}
+          <div className="absolute left-10 right-0 bottom-0 flex justify-between h-6 items-center">
+            <SkeletonItem width="w-10" height="h-3" />
+            <SkeletonItem width="w-10" height="h-3" />
+            <SkeletonItem width="w-10" height="h-3" />
+            <SkeletonItem width="w-10" height="h-3" />
+            <SkeletonItem width="w-10" height="h-3" />
+          </div>
+        </div>
+
+        {/* Legend skeleton */}
+        {showLegend && (
+          <div className="flex flex-wrap justify-center gap-2 mt-2 px-4">
+            <div className="flex items-center space-x-2 px-3 py-1 rounded-lg border border-border bg-card">
+              <SkeletonItem width="w-3" height="h-3" rounded />
+              <SkeletonItem width="w-16" height="h-4" />
+            </div>
+            <div className="flex items-center space-x-2 px-3 py-1 rounded-lg border border-border bg-card">
+              <SkeletonItem width="w-3" height="h-3" rounded />
+              <SkeletonItem width="w-20" height="h-4" />
+            </div>
+            <div className="flex items-center space-x-2 px-3 py-1 rounded-lg border border-border bg-card">
+              <SkeletonItem width="w-3" height="h-3" rounded />
+              <SkeletonItem width="w-14" height="h-4" />
+            </div>
+            <div className="flex items-center space-x-2 px-3 py-1 rounded-lg border border-border bg-card">
+              <SkeletonItem width="w-3" height="h-3" rounded />
+              <SkeletonItem width="w-24" height="h-4" />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Skeleton for the small stats cards grid on the metrics page
+export function SkeletonMetricsStats({ className = '' }: { className?: string }) {
+  return (
+    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${className}`}>
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="card p-4 rounded-lg">
+          <div className="flex items-center space-x-2 mb-3">
+            <SkeletonItem width="w-5" height="h-5" />
+            <SkeletonItem width="w-24" height="h-4" />
+          </div>
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <SkeletonItem width="w-16" height="h-3" />
+              <SkeletonItem width="w-12" height="h-3" />
+            </div>
+            <div className="flex justify-between text-sm">
+              <SkeletonItem width="w-14" height="h-3" />
+              <SkeletonItem width="w-16" height="h-3" />
+            </div>
+            <div className="flex justify-between text-sm">
+              <SkeletonItem width="w-12" height="h-3" />
+              <SkeletonItem width="w-14" height="h-3" />
+            </div>
           </div>
         </div>
       ))}

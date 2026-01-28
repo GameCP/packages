@@ -1,13 +1,18 @@
 'use client';
 
-import { ReactNode, useState } from 'react';
-import { IconType } from 'react-icons';
-import { RiSearchLine, RiRefreshLine, RiFilterLine } from 'react-icons/ri';
+import { ReactNode, useState, useRef, useEffect } from 'react';
+import type { IconType } from 'react-icons';
+import {
+  RiSearchLine,
+  RiRefreshLine,
+  RiFilterLine,
+  RiCloseLine,
+} from 'react-icons/ri';
 import SharedTooltip from './SharedTooltip';
-import { SmartSelect } from './SmartDropdown';
-import SmartDropdown from './SmartDropdown';
-import FormInput from './FormInput';
-import IconButtonWithCount from './IconButtonWithCount';
+import Select from './dropdowns/presets/Select';
+import Dropdown from './dropdowns/Dropdown';
+import FormInput from './forms/FormInput';
+import IconButtonWithCount from './buttons/IconButtonWithCount';
 import { default as BaseActionButton } from './buttons/ActionButton';
 
 interface SearchCardProps {
@@ -47,7 +52,7 @@ export function SearchCard({
   description,
 }: SearchCardProps) {
   return (
-    <div className={`card p-4 lg:p-6 ${className}`}>
+    <div className={`card p-4 lg:p-6 flex-shrink-0 ${className}`}>
       <SearchCardHeader
         title={title}
         count={count}
@@ -83,9 +88,6 @@ export function SearchCardHeader({
               {description}
             </p>
           )}
-          <p className="mt-1 lg:mt-2 text-xs text-secondary-foreground">
-            {count} of {total} {title.toLowerCase()}
-          </p>
         </div>
       </div>
 
@@ -155,12 +157,12 @@ export function FilterSelect({
   searchable?: boolean;
 }) {
   return (
-    <SmartSelect
+    <Select
       value={value}
       onChange={onChange}
       options={options}
       placeholder={placeholder}
-      className={`form-input form-input-md ${className}`}
+      className={className}
       keepOpen={multiple}
       multiple={multiple}
       searchable={searchable}
@@ -291,7 +293,7 @@ export function MobileSearchLayout({
   searchButton,
 }: {
   searchInput: ReactNode;
-  filters: ReactNode;
+  filters?: ReactNode;
   viewControls?: ReactNode;
   activeFilterCount?: number;
   onClearFilters?: () => void;
@@ -310,30 +312,30 @@ export function MobileSearchLayout({
           <div className="flex-1">{searchInput}</div>
           <div className="flex gap-2 items-center">
             {/* Mobile dropdown button - hidden on lg+ */}
-            <div className="lg:hidden">
-              <SmartDropdown
-                isOpen={showFilters}
-                onClose={() => setShowFilters(false)}
-                width={600}
-                maxHeight={320}
-                trigger={
-                  <FilterToggleButton
-                    isOpen={showFilters}
-                    onClick={() => setShowFilters(!showFilters)}
-                    activeCount={activeFilterCount}
-                    onClear={onClearFilters}
-                  />
-                }
-              >
-                <div className="">
-                  <div className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {filters}
+            {filters && (
+              <div className="lg:hidden">
+                <Dropdown
+                  trigger={
+                    <FilterToggleButton
+                      isOpen={showFilters}
+                      onClick={() => setShowFilters(!showFilters)}
+                      activeCount={activeFilterCount}
+                      onClear={onClearFilters}
+                    />
+                  }
+                  width={600}
+                  maxHeight={320}
+                >
+                  <div className="">
+                    <div className="p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {filters}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </SmartDropdown>
-            </div>
+                </Dropdown>
+              </div>
+            )}
             {viewControls && viewControls}
           </div>
         </div>
@@ -359,28 +361,28 @@ export function MobileSearchLayout({
       <div className="flex gap-2 items-center">
         <div className="flex-1">{searchInput}</div>
         <div className="flex gap-2 items-center">
-          <SmartDropdown
-            isOpen={showFilters}
-            onClose={() => setShowFilters(false)}
-            width={600}
-            maxHeight={320}
-            trigger={
-              <FilterToggleButton
-                isOpen={showFilters}
-                onClick={() => setShowFilters(!showFilters)}
-                activeCount={activeFilterCount}
-                onClear={onClearFilters}
-              />
-            }
-          >
-            <div className="">
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {filters}
+          {filters && (
+            <Dropdown
+              trigger={
+                <FilterToggleButton
+                  isOpen={showFilters}
+                  onClick={() => setShowFilters(!showFilters)}
+                  activeCount={activeFilterCount}
+                  onClear={onClearFilters}
+                />
+              }
+              width={600}
+              maxHeight={320}
+            >
+              <div className="">
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {filters}
+                  </div>
                 </div>
               </div>
-            </div>
-          </SmartDropdown>
+            </Dropdown>
+          )}
           {viewControls && viewControls}
         </div>
       </div>
