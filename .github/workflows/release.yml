@@ -10,7 +10,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 permissions:
   contents: write
   pull-requests: write
-  id-token: write  # Required for npm Trusted Publishing
+  id-token: write
 
 jobs:
   release:
@@ -26,32 +26,20 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install dependencies for types
-        run: cd types && npm install
-
-      - name: Install dependencies for manifest
-        run: cd manifest && npm install
-
-      - name: Install dependencies for cli
-        run: cd cli && npm install
-
-      - name: Install dependencies for build
-        run: cd build && npm install
-
       - name: Install dependencies for ui
         run: cd ui && npm install
 
+      - name: Build ui
+        run: cd ui && npm run build
+
       - name: Install root dependencies
         run: npm install
-
-      - name: Build packages
-        run: npm run build:all
 
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: npm run release
+          publish: cd ui && npm publish
           version: npx changeset version
           title: "chore: version packages"
           commit: "chore: version packages"
