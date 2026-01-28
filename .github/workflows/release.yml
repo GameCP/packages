@@ -17,7 +17,13 @@ jobs:
       
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+      
+      - name: Update npm to latest
+        run: npm install -g npm@latest
+      
+      - name: Show npm version
+        run: npm --version
       
       - name: Install root dependencies
         run: npm ci || npm install
@@ -51,10 +57,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Configure npm for trusted publishing
-        run: |
-          npm config set registry https://registry.npmjs.org/
-      
-      - name: Publish to npm
+      - name: Publish to npm with OIDC
         working-directory: ui
         run: npm publish --provenance --access public
