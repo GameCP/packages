@@ -326,7 +326,7 @@ export default function Modal({
             <div className="flex-shrink-0">{header}</div>
           ) : title ? (
             <div
-              className={`px-6 py-4 border-b border-border flex justify-between items-center flex-shrink-0 ${customStyles.header || ''}`}
+              className={`px-6 py-4 border-b border-border flex justify-between items-center flex-shrink-0 bg-muted ${customStyles.header || ''}`}
             >
               <div className="flex items-center gap-3">
                 <h2
@@ -365,7 +365,7 @@ export default function Modal({
           {/* Sticky Footer */}
           {footer && (
             <div
-              className={`flex-shrink-0 px-6 py-4 border-t border-border ${footerBg === 'white' ? 'bg-card' : 'bg-muted'} ${customStyles.footer || ''}`}
+              className={`flex-shrink-0 px-6 py-4 border-t border-border ${footerBg === 'gray' ? 'bg-card' : 'bg-card'} ${customStyles.footer || ''}`}
             >
               {footer}
             </div>

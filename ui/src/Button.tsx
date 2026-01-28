@@ -18,7 +18,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const variantClasses: Record<ButtonVariant, string> = {
     primary: 'btn-primary',
     secondary: 'btn-secondary',
-    danger: 'btn-danger',
+    danger: 'action-btn-delete',
     success: 'action-btn-start',
     warning: 'action-btn-pause',
     ghost: 'bg-transparent hover:bg-muted hover:text-foreground border-transparent',
