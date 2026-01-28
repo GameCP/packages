@@ -64,6 +64,7 @@ export default function Dropdown({
     const [isOpen, setIsOpen] = useState(false);
     const [calculatedPosition, setCalculatedPosition] =
         useState<CalculatedPosition | null>(null);
+    const [focusedIndex, setFocusedIndex] = useState(-1);
 
     const triggerRef = useRef<HTMLDivElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -188,19 +189,73 @@ export default function Dropdown({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [isOpen]);
 
-    // Handle escape key
+    // Handle keyboard navigation
     useEffect(() => {
         if (!isOpen) return;
 
         const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                setIsOpen(false);
+            // Only handle keyboard if we have items
+            if (!items || items.length === 0) {
+                if (event.key === 'Escape') {
+                    setIsOpen(false);
+                }
+                return;
+            }
+
+            switch (event.key) {
+                case 'ArrowDown':
+                    event.preventDefault();
+                    setFocusedIndex(prev => {
+                        const nextIndex = prev < items.length - 1 ? prev + 1 : 0;
+                        // Skip disabled items
+                        let checkIndex = nextIndex;
+                        while (items[checkIndex]?.disabled && checkIndex !== prev) {
+                            checkIndex = checkIndex < items.length - 1 ? checkIndex + 1 : 0;
+                        }
+                        return checkIndex;
+                    });
+                    break;
+                case 'ArrowUp':
+                    event.preventDefault();
+                    setFocusedIndex(prev => {
+                        const nextIndex = prev > 0 ? prev - 1 : items.length - 1;
+                        // Skip disabled items
+                        let checkIndex = nextIndex;
+                        while (items[checkIndex]?.disabled && checkIndex !== prev) {
+                            checkIndex = checkIndex > 0 ? checkIndex - 1 : items.length - 1;
+                        }
+                        return checkIndex;
+                    });
+                    break;
+                case 'Home':
+                    event.preventDefault();
+                    setFocusedIndex(0);
+                    break;
+                case 'End':
+                    event.preventDefault();
+                    setFocusedIndex(items.length - 1);
+                    break;
+                case 'Enter':
+                case ' ':
+                    event.preventDefault();
+                    if (focusedIndex >= 0 && focusedIndex < items.length) {
+                        const item = items[focusedIndex];
+                        if (!item.disabled) {
+                            handleItemSelect(item);
+                        }
+                    }
+                    break;
+                case 'Escape':
+                    event.preventDefault();
+                    setIsOpen(false);
+                    setFocusedIndex(-1);
+                    break;
             }
         };
 
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen]);
+    }, [isOpen, items, focusedIndex]);
 
     // Handle resize/scroll
     useEffect(() => {
@@ -262,13 +317,15 @@ export default function Dropdown({
         if (items) {
             return (
                 <div className="py-1">
-                    {items.map(item => (
+                    {items.map((item, index) => (
                         <DropdownItem
                             key={item.value}
                             item={item}
                             selected={isItemSelected(item.value)}
                             multiple={multiple}
                             onClick={() => handleItemSelect(item)}
+                            focused={focusedIndex === index}
+                            itemId={`${id}-option-${index}`}
                         />
                     ))}
                 </div>
@@ -286,9 +343,22 @@ export default function Dropdown({
                 onClick={handleTriggerClick}
                 className={`${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${triggerClassName}`}
                 role="button"
+                tabIndex={disabled ? -1 : 0}
                 aria-expanded={isOpen}
                 aria-haspopup="listbox"
-                aria-controls={id}
+                aria-controls={`${id}-listbox`}
+                aria-activedescendant={
+                    isOpen && focusedIndex >= 0 && items
+                        ? `${id}-option-${focusedIndex}`
+                        : undefined
+                }
+                onKeyDown={(e) => {
+                    if (disabled) return;
+                    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        setIsOpen(true);
+                    }
+                }}
             >
                 {trigger}
             </div>
@@ -300,8 +370,10 @@ export default function Dropdown({
                 createPortal(
                     <div
                         ref={dropdownRef}
-                        id={id}
+                        id={`${id}-listbox`}
                         role="listbox"
+                        aria-label="Options"
+                        aria-multiselectable={multiple}
                         className={`fixed z-[1000001] card overflow-hidden animate-dropdown-in ${className}`}
                         style={{
                             top: calculatedPosition.isAbove

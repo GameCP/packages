@@ -30,7 +30,7 @@
   "homepage": "https://github.com/GameCP/packages/tree/main/manifest#readme",
   "license": "MIT",
   "dependencies": {
-    "@gamecp/types": "^1.0.0"
+    "@gamecp/types": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.3"

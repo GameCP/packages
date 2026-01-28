@@ -95,10 +95,20 @@ export function DataTableRow({
   const clickableClasses = onClick ? 'cursor-pointer' : '';
   const hoverClasses = hover ? baseClasses : '';
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTableRowElement>) => {
+    if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
     <tr
       className={`${hoverClasses} ${clickableClasses} ${className}`}
       onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
     >
       {children}
     </tr>

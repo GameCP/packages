@@ -1,6 +1,11 @@
 import type { ReactNode } from 'react';
 
 /**
+ * Render function that receives selection state for dynamic styling
+ */
+export type SelectionAwareRenderer = (isSelected: boolean) => ReactNode;
+
+/**
  * Single dropdown item - flexible to support menus, selects, filters
  */
 export interface DropdownItem {
@@ -8,10 +13,10 @@ export interface DropdownItem {
   value: string;
   /** Display label - string or ReactNode */
   label: ReactNode;
-  /** Optional description/subtitle */
-  description?: ReactNode;
-  /** Optional icon (React component, element, or null) */
-  icon?: ReactNode;
+  /** Optional description/subtitle - can be a function to receive selection state */
+  description?: ReactNode | SelectionAwareRenderer;
+  /** Optional icon - can be a function to receive selection state for dynamic styling */
+  icon?: ReactNode | SelectionAwareRenderer;
   /** Whether this item is disabled */
   disabled?: boolean;
   /** Visual variant for the item */

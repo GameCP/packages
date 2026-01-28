@@ -42,15 +42,15 @@ interface HeaderCardProps extends InteractiveCardProps {
   description?: string;
   icon?: IconType;
   iconColor?:
-    | 'success'
-    | 'info'
-    | 'danger'
-    | 'amber'
-    | 'purple'
-    | 'orange'
-    | 'gray'
-    | 'indigo'
-    | 'pink';
+  | 'success'
+  | 'info'
+  | 'danger'
+  | 'amber'
+  | 'purple'
+  | 'orange'
+  | 'gray'
+  | 'indigo'
+  | 'pink';
   iconSize?: 'sm' | 'md' | 'lg';
   actionButton?: ReactNode;
   headerClassName?: string;
@@ -82,16 +82,16 @@ interface CardProps extends AccordionCardProps, StatusCardProps {
   headerBorder?: string;
   headerBg?: string;
   headerStatus?:
-    | 'online'
-    | 'offline'
-    | 'maintenance'
-    | 'error'
-    | 'restarting'
-    | 'starting'
-    | 'success'
-    | 'info'
-    | 'updating'
-    | 'unknown';
+  | 'online'
+  | 'offline'
+  | 'maintenance'
+  | 'error'
+  | 'restarting'
+  | 'starting'
+  | 'success'
+  | 'info'
+  | 'updating'
+  | 'unknown';
 }
 
 // Padding class mapping
@@ -240,6 +240,14 @@ export default function Card({
     onClick?.();
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (disabled) return;
+    if ((clickable || onClick) && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
   const handleToggle = () => {
     if (accordion) {
       const newExpanded = !isExpanded;
@@ -253,6 +261,10 @@ export default function Card({
       className={`${baseClasses} ${className}`}
       style={style}
       onClick={clickable || onClick ? handleClick : undefined}
+      onKeyDown={clickable || onClick ? handleKeyDown : undefined}
+      role={clickable || onClick ? 'button' : undefined}
+      tabIndex={clickable || onClick ? 0 : undefined}
+      aria-disabled={disabled}
     >
       {/* Header Accent */}
       {activeHeaderBorder && (

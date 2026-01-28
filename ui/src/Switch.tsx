@@ -42,6 +42,11 @@ export default function Switch({
     }
   };
 
+  // Generate unique IDs for accessibility
+  const switchId = React.useId();
+  const labelId = label ? `${switchId}-label` : undefined;
+  const descriptionId = description ? `${switchId}-description` : undefined;
+
   const sizes = {
     sm: { track: 'w-8 h-4', thumb: 'w-3 h-3', translate: 'translate-x-4' },
     md: { track: 'w-11 h-6', thumb: 'w-5 h-5', translate: 'translate-x-5' },
@@ -90,14 +95,15 @@ export default function Switch({
     >
       {label && (
         <label
+          id={labelId}
+          htmlFor={switchId}
           className="text-sm font-medium text-foreground cursor-pointer"
-          onClick={toggle}
         >
           {label}
         </label>
       )}
       {description && (
-        <p className="text-xs text-muted-foreground leading-snug">
+        <p id={descriptionId} className="text-xs text-muted-foreground leading-snug">
           {description}
         </p>
       )}
@@ -111,9 +117,12 @@ export default function Switch({
       {labelPosition === 'left' && (label || description) && LabelContent}
 
       <button
+        id={switchId}
         type="button"
         role="switch"
         aria-checked={checked}
+        aria-labelledby={labelId}
+        aria-describedby={descriptionId}
         disabled={disabled}
         onClick={toggle}
         data-tooltip-id={tooltipId}

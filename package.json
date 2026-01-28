@@ -4,6 +4,9 @@
   "private": true,
   "description": "GameCP developer kit monorepo",
   "scripts": {
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "npm run build:all && changeset publish",
     "release:patch": "./release.sh patch",
     "release:minor": "./release.sh minor",
     "release:major": "./release.sh major",

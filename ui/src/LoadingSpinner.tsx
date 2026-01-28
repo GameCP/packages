@@ -36,6 +36,9 @@ const LoadingSpinner = ({
           <div className="w-1.5 h-12 bg-gradient-to-t from-primary-600 to-primary-400 rounded-full shadow-sm [animation:wave_1.2s_ease-in-out_infinite] [animation-delay:0.6s]"></div>
         </div>
 
+        {/* Screen reader announcement */}
+        <span className="sr-only">{message}</span>
+
         {/* Loading text */}
         {showMessage && (
           <div className="space-y-2">
