@@ -105,7 +105,7 @@ export default function Notice({
 
     return (
         <div
-            className={`relative flex items-start ${gap} ${padding} rounded-lg overflow-hidden ${styles.bg} ${className}`}
+            className={`relative flex items-start ${gap} ${padding} rounded-xl overflow-hidden ${styles.bg} ${className}`}
         >
             {/* Left accent bar */}
             <div

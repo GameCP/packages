@@ -43,7 +43,7 @@ export function ConfirmDialog({ isOpen, options, onConfirm, onCancel }: ConfirmD
                     <Button variant="secondary" onClick={onCancel}>
                         {cancelText}
                     </Button>
-                    <Button variant={getConfirmVariant()} onClick={onConfirm}>
+                    <Button variant={getConfirmVariant()} onClick={onConfirm} autoFocus>
                         {confirmText}
                     </Button>
                 </div>
