@@ -52,6 +52,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Publish to npm with provenance
+      - name: Clear stale npm config and publish
         working-directory: ui
-        run: npm publish --provenance --access public
+        run: |
+          rm -f ~/.npmrc
+          npm publish --provenance --access public
