@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "description": "GameCP developer kit monorepo",
+  "workspaces": [
+    "ui",
+    "types",
+    "manifest",
+    "cli",
+    "build"
+  ],
   "scripts": {
     "changeset": "changeset",
     "version": "changeset version",
