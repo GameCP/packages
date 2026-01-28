@@ -6,7 +6,7 @@
   "scripts": {
     "changeset": "changeset",
     "version": "changeset version",
-    "release": "npm run build:all && changeset publish",
+    "release": "cd ui && npm run build && npm publish",
     "release:patch": "./release.sh patch",
     "release:minor": "./release.sh minor",
     "release:major": "./release.sh major",
@@ -28,6 +28,9 @@
     "publish:build": "cd build && npm publish || true",
     "publish:ui": "cd ui && npm publish || true",
     "publish:all": "npm run publish:types && npm run publish:manifest && npm run publish:cli && npm run publish:build && npm run publish:ui"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.0"
   },
   "repository": {
     "type": "git",
