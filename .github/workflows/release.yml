@@ -35,15 +35,28 @@ jobs:
       - name: Build ui
         run: cd ui && npm run build
 
-      - name: Version and Publish
+      - name: Check for changesets
+        id: changesets
+        run: |
+          if [ -d ".changeset" ] && [ "$(ls -A .changeset/*.md 2>/dev/null | grep -v README.md)" ]; then
+            echo "has_changesets=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changesets=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Version packages
+        if: steps.changesets.outputs.has_changesets == 'true'
         run: |
           npx changeset version
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git diff --staged --quiet || git commit -m "chore: version packages"
+          git commit -m "chore: version packages" || echo "No changes to commit"
           git push
-          cd ui && npm publish --provenance --access public
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to npm
+        run: cd ui && npm publish --provenance --access public
+        env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
