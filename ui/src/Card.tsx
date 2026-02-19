@@ -91,6 +91,7 @@ interface CardProps extends AccordionCardProps, StatusCardProps {
   | 'success'
   | 'info'
   | 'updating'
+  | 'terminating'
   | 'unknown';
 }
 
@@ -202,6 +203,8 @@ export default function Card({
       case 'restarting':
       case 'updating':
         return { border: 'bg-orange', bg: 'bg-orange/10' };
+      case 'terminating':
+        return { border: 'bg-destructive', bg: 'bg-danger/10' };
       case 'unknown':
         return { border: 'bg-muted-foreground/30', bg: 'bg-muted/10' };
       default:

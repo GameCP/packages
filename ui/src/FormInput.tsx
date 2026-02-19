@@ -386,7 +386,7 @@ export default function FormInput({
               relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
               ${Boolean(value) ? 'bg-primary' : 'bg-muted'}
               ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-              ${error ? 'ring-2 ring-destructive' : ''}
+              ${error ? 'ring-1 ring-destructive' : ''}
             `}
             aria-label={`${label}${required ? ' (required)' : ''}`}
             aria-describedby={name}

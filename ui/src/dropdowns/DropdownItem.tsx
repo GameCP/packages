@@ -43,8 +43,8 @@ export default function DropdownItem({
     flex items-start gap-3 border-b border-border/30 last:border-b-0
     ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
     ${selected && !multiple ? 'bg-primary text-primary-foreground' : variantClasses[variant]}
-    ${focused && !selected ? 'bg-muted/70 ring-2 ring-primary/50 ring-inset' : ''}
-    ${focused && selected ? 'brightness-110 ring-2 ring-primary-foreground/30' : ''}
+    ${focused && !selected ? 'bg-muted/70 ring-1 ring-primary/50 ring-inset' : ''}
+    ${focused && selected ? 'brightness-110 ring-1 ring-primary-foreground/30' : ''}
   `;
 
     return (
