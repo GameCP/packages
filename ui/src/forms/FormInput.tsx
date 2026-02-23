@@ -439,7 +439,7 @@ export default function FormInput({
           {type === 'select' ? (
             <div className="flex items-center">
               <div
-                className={`relative flex-1 ${footerDescription ? 'border-r-2 border-info/50 hover:border-info rounded-r-sm cursor-help transition-colors' : ''}`}
+                className={`relative flex-1 ${footerDescription ? 'cursor-help' : ''}`}
                 data-tooltip-id={
                   footerDescription ? `${uniqueId}-help` : undefined
                 }
@@ -472,7 +472,7 @@ export default function FormInput({
                   }
                   options={options || []}
                   placeholder={placeholder || 'Select an option...'}
-                  className={`${error ? 'form-input-error' : ''} ${inputClassName}`}
+                  className={`${error ? 'form-input-error' : ''} ${footerDescription ? 'border-r-2 border-r-info/50 hover:border-r-info transition-colors' : ''} ${inputClassName}`}
                   multiple={multiSelect}
                   width={selectWidth}
                   searchable={searchable}
@@ -505,7 +505,7 @@ export default function FormInput({
           ) : type === 'textarea' ? (
             <div className="flex items-start">
               <div
-                className={`relative flex-1 ${footerDescription ? 'border-r-2 border-info/50 hover:border-info rounded-r-sm cursor-help transition-colors' : ''}`}
+                className={`relative flex-1 ${footerDescription ? 'cursor-help' : ''}`}
                 data-tooltip-id={
                   footerDescription ? `${uniqueId}-help` : undefined
                 }
@@ -531,7 +531,7 @@ export default function FormInput({
                         ? `${name}-description`
                         : undefined
                   }
-                  className={`form-input ${error ? 'form-input-error' : ''} ${inputClassName}`}
+                  className={`form-input ${error ? 'form-input-error' : ''} ${footerDescription ? 'border-r-2 border-r-info/50 hover:border-r-info transition-colors' : ''} ${inputClassName}`}
                 />
               </div>
               {/* Help tooltip for footer description */}
@@ -548,7 +548,7 @@ export default function FormInput({
             </div>
           ) : type === 'color' ? (
             <div
-              className={`flex items-center space-x-3 ${footerDescription ? 'border-r-2 border-info/50 hover:border-info pr-2 rounded-r-sm cursor-help transition-colors' : ''}`}
+              className={`flex items-center space-x-3 ${footerDescription ? 'cursor-help' : ''}`}
               data-tooltip-id={
                 footerDescription ? `${uniqueId}-help` : undefined
               }
@@ -614,7 +614,7 @@ export default function FormInput({
           ) : showHidePassword && type === 'password' ? (
             <div className="flex items-center">
               <div
-                className={`relative flex-1 ${footerDescription ? 'border-r-2 border-info/50 hover:border-info rounded-r-sm cursor-help transition-colors' : ''}`}
+                className={`relative flex-1 ${footerDescription ? 'cursor-help' : ''}`}
                 data-tooltip-id={
                   footerDescription ? `${uniqueId}-help` : undefined
                 }
@@ -642,7 +642,7 @@ export default function FormInput({
                         ? `${name}-description`
                         : undefined
                   }
-                  className={`form-input ${error ? 'form-input-error' : ''} ${readOnly ? 'bg-muted cursor-default' : ''} ${copyable ? 'pr-20' : 'pr-10'} ${getInputPaddingClasses(type, getIconConfig(icon))} ${inputClassName}`}
+                  className={`form-input ${error ? 'form-input-error' : ''} ${readOnly ? 'bg-muted cursor-default' : ''} ${copyable ? 'pr-20' : 'pr-10'} ${footerDescription ? 'border-r-2 border-r-info/50 hover:border-r-info transition-colors' : ''} ${getInputPaddingClasses(type, getIconConfig(icon))} ${inputClassName}`}
                 />
                 {shouldShowIcons(type) &&
                   (() => {
@@ -715,7 +715,7 @@ export default function FormInput({
             </div>
           ) : (
             <div
-              className={`flex items-center ${variablePicker ? 'input-group' : ''} ${footerDescription ? 'border-r-2 border-info/50 hover:border-info rounded-r-sm cursor-help transition-colors' : ''}`}
+              className={`flex items-center ${variablePicker ? 'input-group' : ''} ${footerDescription ? 'cursor-help' : ''}`}
               data-tooltip-id={
                 footerDescription ? `${uniqueId}-help` : undefined
               }
@@ -748,7 +748,7 @@ export default function FormInput({
                         ? `${name}-description`
                         : undefined
                   }
-                  className={`form-input ${error ? 'form-input-error' : ''} ${readOnly ? 'bg-muted cursor-default' : ''} ${copyable ? 'pr-10' : ''} ${variablePicker ? 'rounded-r-none border-r-0' : ''} ${getInputPaddingClasses(type, getIconConfig(icon))} ${inputClassName}`}
+                  className={`form-input ${error ? 'form-input-error' : ''} ${readOnly ? 'bg-muted cursor-default' : ''} ${copyable ? 'pr-10' : ''} ${variablePicker ? 'rounded-r-none border-r-0' : ''} ${footerDescription && !variablePicker ? 'border-r-2 border-r-info/50 hover:border-r-info transition-colors' : ''} ${getInputPaddingClasses(type, getIconConfig(icon))} ${inputClassName}`}
                 />
                 {shouldShowIcons(type) &&
                   (() => {
