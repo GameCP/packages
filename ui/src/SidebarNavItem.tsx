@@ -50,7 +50,8 @@ export function SidebarNavItem({
             <button
                 type="button"
                 onClick={onClick}
-                title={title}
+                data-tooltip-id={title ? 'global-tooltip' : undefined}
+                data-tooltip-content={title}
                 aria-current={isActive ? 'page' : undefined}
                 className={`w-full text-left ${commonClasses}`}
             >
@@ -69,6 +70,8 @@ export function SidebarNavItem({
         <Link
             href={href}
             onClick={onClick}
+            data-tooltip-id={title ? 'global-tooltip' : undefined}
+            data-tooltip-content={title}
             className={commonClasses}
         >
             {Icon && (
