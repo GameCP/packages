@@ -48,40 +48,40 @@ export default function Switch({
   const descriptionId = description ? `${switchId}-description` : undefined;
 
   const sizes = {
-    sm: { track: 'w-8 h-4', thumb: 'w-3 h-3', translate: 'translate-x-4' },
-    md: { track: 'w-11 h-6', thumb: 'w-5 h-5', translate: 'translate-x-5' },
-    lg: { track: 'w-14 h-8', thumb: 'w-7 h-7', translate: 'translate-x-6' },
+    sm: { track: 'w-8 h-[18px]', thumb: 'w-3.5 h-3.5', translate: 'translate-x-[14px]' },
+    md: { track: 'w-[44px] h-[24px]', thumb: 'w-5 h-5', translate: 'translate-x-5' },
+    lg: { track: 'w-[56px] h-[32px]', thumb: 'w-7 h-7', translate: 'translate-x-[24px]' },
   };
 
   const variants = {
     default: {
-      checked: 'bg-primary/90',
-      unchecked: 'bg-muted-foreground/40',
+      checked: 'bg-primary/60',
+      unchecked: 'bg-muted-foreground/20',
       ring: 'focus:ring-primary',
     },
     success: {
-      checked: 'bg-success',
-      unchecked: 'bg-muted-foreground/40',
+      checked: 'bg-success/60',
+      unchecked: 'bg-muted-foreground/20',
       ring: 'focus:ring-success',
     },
     danger: {
-      checked: 'bg-destructive',
-      unchecked: 'bg-muted-foreground/40',
+      checked: 'bg-destructive/60',
+      unchecked: 'bg-muted-foreground/20',
       ring: 'focus:ring-destructive',
     },
     warning: {
-      checked: 'bg-warning',
-      unchecked: 'bg-muted-foreground/40',
+      checked: 'bg-warning/60',
+      unchecked: 'bg-muted-foreground/20',
       ring: 'focus:ring-warning',
     },
     info: {
-      checked: 'bg-info',
-      unchecked: 'bg-muted-foreground/40',
+      checked: 'bg-info/60',
+      unchecked: 'bg-muted-foreground/20',
       ring: 'focus:ring-info',
     },
     embedded: {
-      checked: 'bg-success',
-      unchecked: 'bg-muted-foreground/40',
+      checked: 'bg-success/60',
+      unchecked: 'bg-muted-foreground/20',
       ring: 'focus:ring-success',
     },
   };
