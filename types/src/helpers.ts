@@ -38,7 +38,9 @@ export const gamecp = {
   api: {
     async get(url: string) {
       const response = await getWindow().GameCP_API.fetch(url);
-      return response.json();
+      const data = await response.json();
+      if (!response.ok) throw data;
+      return data;
     },
     
     async post(url: string, data?: any) {
@@ -47,7 +49,9 @@ export const gamecp = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      return response.json();
+      const result = await response.json();
+      if (!response.ok) throw result;
+      return result;
     },
     
     async put(url: string, data?: any) {
@@ -56,7 +60,9 @@ export const gamecp = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      return response.json();
+      const result = await response.json();
+      if (!response.ok) throw result;
+      return result;
     },
     
     async delete(url: string, data?: any) {
@@ -65,7 +71,9 @@ export const gamecp = {
         headers: { 'Content-Type': 'application/json' },
         body: data ? JSON.stringify(data) : undefined,
       });
-      return response.json();
+      const result = await response.json();
+      if (!response.ok) throw result;
+      return result;
     },
     
     /** Raw fetch for custom requests */
@@ -81,6 +89,22 @@ export const gamecp = {
   t(translations: Record<string, string>) {
     const locale = this.locale;
     return translations[locale] || translations.en;
+  },
+
+  /** Toast notifications */
+  toast: {
+    success(title: string, description?: string) {
+      getWindow().GameCP_SDK?.toast?.success(title, description);
+    },
+    error(title: string, description?: string) {
+      getWindow().GameCP_SDK?.toast?.error(title, description);
+    },
+    info(title: string, description?: string) {
+      getWindow().GameCP_SDK?.toast?.info(title, description);
+    },
+    warning(title: string, description?: string) {
+      getWindow().GameCP_SDK?.toast?.warning(title, description);
+    },
   },
 };
 
@@ -111,6 +135,14 @@ export interface UseGameCPReturn {
   
   /** Current pathname for active state detection */
   pathname: string | null;
+  
+  /** Toast notifications */
+  toast: {
+    success: (title: string, description?: string) => void;
+    error: (title: string, description?: string) => void;
+    info: (title: string, description?: string) => void;
+    warning: (title: string, description?: string) => void;
+  };
   
   /** Current authenticated user (null if not logged in) */
   user: {
@@ -169,6 +201,7 @@ export function useGameCP(): UseGameCPReturn {
     // Helpers
     t: gamecp.t.bind(gamecp),
     api: gamecp.api,
+    toast: gamecp.toast,
     
     // Config helper
     getConfig: (extensionId: string) => getWindow().GameCP_ExtensionConfig?.[extensionId] || {},
