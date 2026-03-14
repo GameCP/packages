@@ -46,6 +46,7 @@ export interface ExtensionContext {
     restart: () => Promise<void>;
     sendCommand: (command: string) => Promise<void>;
     deleteFile: (path: string) => Promise<void>;
+    backup: () => Promise<void>;
   };
   
   /** MySQL client (requires node_modules: ["mysql2"]) */
