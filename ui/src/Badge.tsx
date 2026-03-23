@@ -43,21 +43,20 @@ interface BadgeProps {
 // Badge variant styles using semantic color classes where applicable
 const badgeVariants: Record<Exclude<BadgeVariant, 'custom'>, string> = {
   default:
-    'bg-secondary text-secondary-foreground border-transparent hover:bg-secondary/80',
-  primary:
-    'bg-primary text-primary-foreground border-transparent hover:bg-primary/80',
+    'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+  primary: 'badge-primary',
   secondary:
-    'bg-secondary text-secondary-foreground border-transparent hover:bg-secondary/80',
-  success: 'status-running-badge border-transparent',
-  warning: 'status-starting-badge border-transparent',
-  error: 'status-error-badge border-transparent',
-  info: 'bg-muted text-muted-foreground border-ring',
-  gray: 'bg-muted text-muted-foreground border-border',
+    'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+  success: 'status-running-badge',
+  warning: 'status-starting-badge',
+  error: 'status-error-badge',
+  info: 'bg-muted text-muted-foreground',
+  gray: 'bg-muted text-muted-foreground',
   purple: 'badge-purple',
   pink: 'badge-pink',
   indigo: 'badge-indigo',
-  yellow: 'status-starting-badge border-transparent',
-  orange: 'status-restarting-badge border-transparent',
+  yellow: 'status-starting-badge',
+  orange: 'status-restarting-badge',
   teal: 'badge-teal',
   cyan: 'badge-cyan',
   lime: 'badge-lime',
@@ -66,7 +65,7 @@ const badgeVariants: Record<Exclude<BadgeVariant, 'custom'>, string> = {
   sky: 'badge-sky',
   violet: 'badge-violet',
   fuchsia: 'badge-fuchsia',
-  amber: 'status-starting-badge border-transparent',
+  amber: 'status-starting-badge',
 };
 
 const badgeSizes: Record<BadgeSize, string> = {
@@ -83,7 +82,7 @@ export default function Badge({
   customColors,
 }: BadgeProps) {
   const baseClasses =
-    'inline-flex items-center font-medium rounded-full border';
+    'inline-flex items-center font-medium rounded-full';
 
   const variantClasses = variant === 'custom' ? '' : badgeVariants[variant];
 
@@ -92,10 +91,10 @@ export default function Badge({
   const customStyles =
     variant === 'custom' && customColors
       ? {
-          backgroundColor: customColors.background,
-          color: customColors.text,
-          borderColor: customColors.border || customColors.background,
-        }
+        backgroundColor: customColors.background,
+        color: customColors.text,
+        borderColor: customColors.border || customColors.background,
+      }
       : {};
 
   return (

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import Button from './Button';
+import { RiErrorWarningLine } from 'react-icons/ri';
 
 export interface ConfirmDialogOptions {
     title: string;
@@ -34,12 +35,24 @@ export function ConfirmDialog({ isOpen, options, onConfirm, onCancel }: ConfirmD
         }
     };
 
-    return (
-        <Modal isOpen={isOpen} onClose={onCancel} title={title}>
-            <div className="space-y-4">
-                <p className="text-foreground">{message}</p>
+    const isDanger = confirmButtonColor === 'danger';
 
-                <div className="flex gap-3 justify-end">
+    return (
+        <Modal isOpen={isOpen} onClose={onCancel} title="" className="max-w-md" footer={null}>
+            <div className="flex flex-col items-center text-center py-4 px-2">
+                {/* Icon */}
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${isDanger ? 'bg-danger/10' : 'bg-info/10'}`}>
+                    <RiErrorWarningLine className={`w-6 h-6 ${isDanger ? 'text-danger' : 'text-info'}`} />
+                </div>
+
+                {/* Title */}
+                <h3 className="text-lg font-semibold text-foreground mb-2">{title}</h3>
+
+                {/* Message */}
+                <p className="text-sm text-muted-foreground leading-relaxed mb-6">{message}</p>
+
+                {/* Actions */}
+                <div className="flex gap-3 w-full justify-center">
                     <Button variant="secondary" onClick={onCancel}>
                         {cancelText}
                     </Button>
